@@ -1,0 +1,61 @@
+@import "https://fonts.googleapis.com/css?family=Roboto";
+body {
+  margin: 0;
+  font-family: "Roboto";
+  background-color:#00102d;
+  text-align: center;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  vertical-align: bottom;
+  padding-right: 2vw;
+  padding-left: 2vw;
+  color: white;
+  font-size: 4vh;
+}
+.navbar {
+  text-align: center;
+  overflow: auto;
+  padding: 1.5vw;
+  background-color: #111111;
+  border: solid #333333;
+}
+.btn {
+  color: white;
+  background: #333333;
+  padding: 1vh 1vh 1vh 1vh;
+  border: solid #666666 2px;
+  font-size: 2vh;
+}
+.textfield {
+  font-size: 2vh;
+  text-align: left;
+  padding: 0.5vh;
+  width: 60%;
+  height: 2vh;
+  background-color: white;
+}
+.content {
+  padding: 2vh;
+  text-align: center;
+  background-color: #111111;
+  font-size: 3vh;
+  border: solid #333333;
+}
+.sortable {
+  align-items: center;
+  font-size: 2vh;
+  border-spacing: 0;
+  margin: 1rem;
+  background-color: #444444;
+  width: 95%;
+  text-align: center;
+}
+.table__row:nth-child(even) {
+   background-color: #555555;
+}
+.table__cel {
+  padding: 1px;
+}
