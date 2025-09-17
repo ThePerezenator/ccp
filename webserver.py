@@ -1,4 +1,5 @@
-from flask import Flask, render_template, current_app as app
+from flask import Flask, request, render_template, current_app as app
+import sqlite
 
 port = "5001"
 path = "/CCP"
@@ -17,7 +18,10 @@ def index():
 
 @app.route("/recipie/")
 def recipie():
-    return render_template("recipie.html")
+    if request.args.get('recipie') != None:
+        recipie = request.args.get('recipie')
+        recipie_data = sqlite.open({recipie})
+    return render_template("recipies.html", recipie_data=recipie_data)
 
 
 @app.route("/healthcheck/", methods=["GET"])

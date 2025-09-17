@@ -18,15 +18,14 @@ def create_table_recipies():
 		if conn:
 			conn.close()
 
-def open(setlist):
+def open(recipie):
 	try:
-		os.chdir(f"{path}")
-		setlist = str(setlist)[2:-2]
-		print(f"opening {setlist}")
-		conn = sqlite3.connect(setlist)
+		recipie = str(recipie)[2:-2]
+		print(f"opening {recipie}")
+		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f"SELECT * from {setlist} ORDER BY song COLLATE NOCASE ASC")
-		return(c.fetchall())
+		c.execute(f"SELECT * from recipies WHERE name = '{recipie}'")
+		return(c.fetchone())
 	except Error as e:
 		print(e)
 	finally:
