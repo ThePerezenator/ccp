@@ -1,8 +1,49 @@
 @import "https://fonts.googleapis.com/css?family=Roboto";
 body {
   margin: 0;
+  padding: 0.5rem;
   font-family: "Roboto";
   background-color:#00102d;
   text-align: center;
   color: white;
+}
+
+header {
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+a {
+  text-decoration: none;
+  color: white;
+  padding: 0.5rem;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.dashboard {
+  display: flex;
+  justify-content: space-around;
+  margin: 1rem;
+
+
+}
+
+.recipes, .inventory {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: #00102d;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.recipeList, .inventoryList {
+  padding: 1rem;
 }
