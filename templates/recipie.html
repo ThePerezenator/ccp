@@ -6,7 +6,12 @@
     <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-
+  <h1>{{ recipe['name'] }}</h1>
+<p>
+    {% for step in recipe['instructions'].splitlines() %}
+        {{ step }}<br>
+    {% endfor %}
+</p>
 </body>
 </html>
 

@@ -6,14 +6,12 @@ from webserver import path
 
 rapidapi = False
 
-def add_db():
-	setlist = f"{setlist}" 
+def create_table_recipies():
 	try:
-		os.chdir(f"{path}")
-		conn = sqlite3.connect(f"{setlist}.db")
+		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f'CREATE TABLE IF NOT EXISTS {setlist}(song Text, artist Text, release Text)')
-		print(f"{setlist} CREATED")
+		c.execute(f'CREATE TABLE IF NOT EXISTS recipies(id Text, name Text, description Text, instructions Text)')
+		print(f"database CREATED")
 	except Error as e:
 		print(e)
 	finally:
@@ -107,3 +105,4 @@ def remove_song(setlist, song):
 
 
 
+create_table_recipies()

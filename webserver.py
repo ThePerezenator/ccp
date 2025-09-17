@@ -1,7 +1,7 @@
 from flask import Flask, render_template, current_app as app
 
 port = "5001"
-path = "/ccp"
+path = "/CCP"
 
 
 app = Flask(__name__, static_folder='static')
