@@ -2,44 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Firefly</title>
+    <title>CCP</title>
     <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-<div class="header">
-    <h1>Firefly</h1>
-</div>
-<div class="navbar">
-  <input class="btn" type="submit" value="Refresh" onclick="window.location='{{ request.url_root }}';"></input>
-  <form action="#" method="post">
-    <div>
-      <input class="textfield" type="text" name="setlist" placeholder="New Setlist"/>
+  <header>
+    <h1 class="title">College Cooking Pamphlet</h1>
+    <div class="links">
+      <a href="index.html">Dashboard</a>
+      <a href="recipie.html">Cook Book</a>
+      <a href="inventory.html">Pantry</a>
     </div>
-    <p><input class="btn" type="submit" value="Submit" /></p>
-  </form>
-</div>
-<div>
-  <div class="content">
-    <h2>Setlists</h2>
-    <table class="sortable">
-      <tr class="table__header">
-        {% for header in main_headings %}
-        <th class = "table__cell">{{ header }}</th>
-        {% endfor %}
-      </tr>
-      {% for row in main_data %}
-      <tr class="table__row">
-        {% for cell in row %}
-        <td class="table__cell">{{ cell }}</td>
-        <td>
-          <input class="btn" type="submit" value="Open" onclick="window.location='{{ request.url_root }}open/?setlist={{cell}}';"></input>
-          <input class="btn" type="submit" value="Delete" onclick="window.location='{{ request.url_root }}?delete={{ cell }}';"/>
-          </td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-</div>
+  </header>
 </body>
 </html>

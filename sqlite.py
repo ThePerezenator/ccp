@@ -4,13 +4,13 @@ import requests
 from sqlite3 import Error
 from webserver import path
 
-rapidapi = True
+rapidapi = False
 
-def add_setlist(setlist):
+def add_db():
 	setlist = f"{setlist}" 
 	try:
-		os.chdir(f"{path}/Setlists")
-		conn = sqlite3.connect(f"{setlist}")
+		os.chdir(f"{path}")
+		conn = sqlite3.connect(f"{setlist}.db")
 		c = conn.cursor()
 		c.execute(f'CREATE TABLE IF NOT EXISTS {setlist}(song Text, artist Text, release Text)')
 		print(f"{setlist} CREATED")
@@ -22,7 +22,7 @@ def add_setlist(setlist):
 
 def open(setlist):
 	try:
-		os.chdir(f"{path}/Setlists")
+		os.chdir(f"{path}")
 		setlist = str(setlist)[2:-2]
 		print(f"opening {setlist}")
 		conn = sqlite3.connect(setlist)
