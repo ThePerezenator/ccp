@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+    firefly:
+        container_name: ccp
+        ports:
+            - '5000:5000'
+        restart: unless-stopped
+        volumes:
+            - '/mnt/HDDs/Docker/ccp:/ccp/'
+        image: ccp
+
+        networks:
+          - proxy_wan
+
+networks:
+  proxy_wan:
+    external: true
