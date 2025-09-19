@@ -1,4 +1,5 @@
 import sqlite3
+import sqlite # Import the sqlite module to run the table creation logic
 import json
 
 def seed_database():
