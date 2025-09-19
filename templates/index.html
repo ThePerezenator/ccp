@@ -7,10 +7,10 @@
 </head>
 <body>
   <header>
-    <h2 class="title">College Cooking Pamphlet</h2>
+    <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
     <div class="links">
       <a href="/">Dashboard</a>
-      <a href="/recipie/One-Pan Chicken and Rice">Cook Book</a>
+      <a href="/recipie/Chicken and Rice">Cook Book</a>
       <a href="/pantry">Pantry</a>
     </div>
   </header>
@@ -19,20 +19,30 @@
     <div class="recipes">
       <h3>Cook Book</h3>
       <div class="recipeList">
-        <a href="/recipie/American Tacos"><p>American Tacos</p></a>
-        <a href="/recipie/Quesadilla"><p>Quesadilla</p></a>
-        <a href="/recipie/Pasta"><p>Pasta</p></a>
-        <a href="/recipie/Chicken and Rice"><p>Chicken and Rice</p></a>
-        <!-- Add more links here as you add recipes -->
+        {% for recipe in recipes %}
+          <a href="{{ url_for('recipie', recipie_name=recipe[0]) }}"><p>{{ recipe[0] }}</p></a>
+        {% else %}
+          <p>No recipes found. Try importing one!</p>
+        {% endfor %}
       </div>
     </div>
     <div class="inventory">
       <h3>Pantry</h3>
       <div class="inventoryList">
-        <p>Milk: 1 gallon</p>
-        <p>Beef: 2 pounds</p>
-        <p>Cheese: 1 pound</p>
+        {% for item in inventory %}
+          <p>{{ item[1] }}: {{ item[2] }} {{ item[3] }}</p>
+        {% else %}
+          <p>Your pantry is empty.</p>
+        {% endfor %}
       </div>
+    </div>
+    <div class="import-recipe">
+      <h3>Import Recipe</h3>
+      <p>Paste a URL from a recipe blog or a public Google Doc.</p>
+      <form action="/import/url" method="POST" class="import-form">
+        <input type="url" name="recipe_url" placeholder="https://www.allrecipes.com/..." required>
+        <button type="submit">Import</button>
+      </form>
     </div>
   </div>
 </body>
