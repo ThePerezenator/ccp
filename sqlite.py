@@ -1,16 +1,12 @@
 import sqlite3
-import os
-import requests
 from sqlite3 import Error
-from webserver import path
 
-rapidapi = False
 
 def create_table_recipies():
 	try:
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f'CREATE TABLE IF NOT EXISTS recipies(id Text, name Text, description Text, instructions Text)')
+		c.execute(f'CREATE TABLE IF NOT EXISTS recipies(id INTEGER PRIMARY KEY, name TEXT UNIQUE, description TEXT, ingredients TEXT, instructions TEXT, image_url TEXT)')
 		print(f"database CREATED")
 	except Error as e:
 		print(e)
@@ -18,13 +14,29 @@ def create_table_recipies():
 		if conn:
 			conn.close()
 
-def open(recipie):
+def create_table_inventory():
 	try:
-		recipie = str(recipie)[2:-2]
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		# Using INTEGER PRIMARY KEY makes it an auto-incrementing field
+		c.execute(f'CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY, name TEXT, quantity REAL, unit TEXT)')
+		print(f"inventory table CREATED")
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
+def open(recipie):
+	"""
+    Fetches a single recipe from the database by its name.
+    Uses a parameterized query to prevent SQL injection.
+    """
+	try:
 		print(f"opening {recipie}")
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f"SELECT * from recipies WHERE name = '{recipie}'")
+		c.execute("SELECT * from recipies WHERE name = ?", (recipie,))
 		return(c.fetchone())
 	except Error as e:
 		print(e)
@@ -32,68 +44,25 @@ def open(recipie):
 		if conn:
 			conn.close()
 
-def add_song(setlist, song, artist, release):
+def get_all_inventory():
+	"""Fetches all items from the inventory."""
 	try:
-		if rapidapi and not artist or not release:       
-			try:
-				#spotify api from rapid api  
-				url = "https://spotify23.p.rapidapi.com/search/"                
-				querystring = {"q":song,"type":"tracks","offset":"0","limit":"3","numberOfTopResults":"3"}
-				headers = {
-					"X-RapidAPI-Key": "3f5bdb3f62msh26a0c2dedd6d13ap13a44cjsn52f0c4e75538",
-					"X-RapidAPI-Host": "spotify23.p.rapidapi.com"
-				}
-				r = requests.request("GET", url, headers=headers, params=querystring)
-				data = r.json()
-				id = data['tracks']['items'][0]['data']['id']
-				print(id)
-
-				#iterates and prints top 3 results for the queried song
-				i = 0
-				while i < len(data['tracks']['items']):
-					print(f"RETURN #{i} {data['tracks']['items'][i]['data']['name']}")
-					i += 1
-
-				url = "https://spotify23.p.rapidapi.com/tracks/"
-				querystring = {"ids":id}
-				r = requests.request("GET", url, headers=headers, params=querystring)
-				data = r.json()
-			
-				if artist == "":
-					artist = data['tracks'][0]['artists'][0]['name']
-				if release == "":
-					release = data['tracks'][0]['album']['release_date']
-				print(artist)
-				print(release)
-		
-			except:
-				artist = ""
-				release = ""
-				print("error fetching from spotify api")		
-		
-		else:
-			print("artist and release from text field")
-
-		os.chdir(f"{path}/Setlists")
-		conn = sqlite3.connect(f"{path}/Setlists/{setlist}")
-		print(f"Setlist: {setlist} Song: {song}")
+		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f"INSERT INTO {setlist} (song, artist, release) VALUES (?, ?, ?)", 
-	    (song, artist, release))
-		conn.commit()
+		c.execute("SELECT * from inventory ORDER BY name")
+		return c.fetchall()
 	except Error as e:
 		print(e)
 	finally:
 		if conn:
 			conn.close()
-		
-def remove_song(setlist, song):
+
+def add_inventory_item(name, quantity, unit):
+	"""Adds a new item to the inventory."""
 	try:
-		os.chdir(f"{path}/Setlists")
-		conn = sqlite3.connect(f"{path}/Setlists/{setlist}")
-		print(f"Setlist: {setlist} Song: {song}")
+		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f"DELETE from {setlist} WHERE song = '{song}'")
+		c.execute("INSERT INTO inventory (name, quantity, unit) VALUES (?, ?, ?)", (name, quantity, unit))
 		conn.commit()
 	except Error as e:
 		print(e)
@@ -101,7 +70,18 @@ def remove_song(setlist, song):
 		if conn:
 			conn.close()
 
-
-
+def remove_inventory_item(item_id):
+	"""Removes an item from the inventory by its ID."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("DELETE from inventory WHERE id = ?", (item_id,))
+		conn.commit()
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
 
 create_table_recipies()
+create_table_inventory()
