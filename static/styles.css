@@ -228,3 +228,83 @@ a:hover {
     margin-right: 15px;
     flex-shrink: 0;
 }
+
+/* Pantry Page Styles */
+.pantry-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: auto;
+    align-items: flex-start;
+}
+
+.pantry-list {
+    flex: 2;
+    background-color: white;
+    color: #00102d;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: left;
+}
+
+.pantry-list h2, .pantry-add-form h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.pantry-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pantry-list th, .pantry-list td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.pantry-list th {
+    text-align: left;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    color: #555;
+}
+
+.pantry-list .remove-btn {
+    color: #c0392b;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+.pantry-list .remove-btn:hover {
+    text-decoration: underline;
+}
+
+.pantry-add-form {
+    flex: 1;
+    background-color: white;
+    color: #00102d;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.pantry-add-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pantry-add-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pantry-add-form button {
+    padding: 12px;
+    background-color: #00102d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
