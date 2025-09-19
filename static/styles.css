@@ -1,49 +1,230 @@
 @import "https://fonts.googleapis.com/css?family=Roboto";
+
 body {
+
   margin: 0;
+
   padding: 0.5rem;
+
   font-family: "Roboto";
+
   background-color:#00102d;
+
   text-align: center;
+
   color: white;
+
 }
 
+
 header {
+
   padding: 0.5rem;
+
   margin-bottom: 2rem;
+
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
 }
+
 
 
 a {
+
   text-decoration: none;
+
   color: white;
+
   padding: 0.5rem;
+
 }
+
 
 a:hover {
+
   text-decoration: underline;
+
 }
 
+
 .dashboard {
+
   display: flex;
+
   justify-content: space-around;
+
   margin: 1rem;
 
 
+
 }
+
 
 .recipes, .inventory {
+
   display: flex;
+
   flex-direction: column;
+
   background-color: white;
+
   color: #00102d;
+
   border-radius: 1rem;
+
   padding: 1rem;
+
 }
 
+
 .recipeList, .inventoryList {
+
   padding: 1rem;
+
+} 
+/* Add these new rules to your existing styles.css file */
+
+/* This makes the whole recipe section a white card, like your .recipes class */
+.recipe-container {
+    background-color: white;
+    color: #00102d; /* Dark text for the light card */
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: auto;
+    text-align: left; /* Override the body's center alignment */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Styles for the top part of the recipe (title, image) */
+.recipe-header {
+    display: flex;
+    gap: 30px; /* Space between image and text */
+    align-items: center;
+    border-bottom: 1px solid #eee; /* Light border for separation */
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.recipe-header img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.recipe-header-info h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5em;
+    color: #00102d;
+}
+
+.recipe-actions button {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    color: #333;
+    font-size: 0.9em;
+}
+
+/* This creates the two-column layout for ingredients and method */
+.recipe-body {
+    display: flex;
+    gap: 40px;
+}
+
+.ingredients-column {
+    flex: 2; /* Adjust ratio as needed */
+}
+
+.method-column {
+    flex: 3; /* Adjust ratio as needed */
+    border-left: 1px solid #eee;
+    padding-left: 40px;
+}
+
+/* Section headings like "Ingredients" and "Method" */
+.recipe-body h2 {
+    font-size: 1.2em;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* Sub-headings like "Chicken Seasoning" */
+.recipe-body h3 {
+    font-size: 1em;
+    color: #00102d;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+/* General styling for the lists */
+.recipe-body ul, .recipe-body ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Styling for each ingredient item */
+.ingredients-column li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    line-height: 1.5;
+}
+
+/* This creates the empty checkbox */
+.ingredients-column li::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+/* Styling for each method step */
+.method-column ol {
+    counter-reset: method-counter; /* Creates the number counter */
+}
+
+.method-column li {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    counter-increment: method-counter; /* Increases the counter by 1 for each step */
+    line-height: 1.6;
+}
+
+/* This creates the styled number circle */
+.method-column li::before {
+    content: counter(method-counter);
+    background-color: #eef2f9; /* Light blue background */
+    color: #00102d;
+    font-weight: bold;
+    font-size: 0.9em;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
 }
