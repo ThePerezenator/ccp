@@ -9,10 +9,49 @@
     <header>
     <h2 class="title">College Cooking Pamphlet</h2>
     <div class="links">
-      <a href="index.html">Dashboard</a>
-      <a href="recipie.html">Cook Book</a>
-      <a href="inventory.html">Pantry</a>
+      <a href="/">Dashboard</a>
+      <a href="/recipie/Pasta">Cook Book</a>
+      <a href="/pantry">Pantry</a>
     </div>
   </header>
+
+  <div class="pantry-container">
+    <div class="pantry-list">
+        <h2>My Pantry</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                    <td><a href="/pantry/remove/{{ item[0] }}" class="remove-btn">Remove</a></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">Your pantry is empty. Add an item below!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pantry-add-form">
+        <h2>Add Item</h2>
+        <form action="/pantry/add" method="POST">
+            <input type="text" name="name" placeholder="Ingredient Name" required>
+            <input type="number" step="0.1" name="quantity" placeholder="Quantity" required>
+            <input type="text" name="unit" placeholder="Unit (e.g., lbs, cups)" required>
+            <button type="submit">Add to Pantry</button>
+        </form>
+    </div>
+  </div>
 </body>
 </html>
