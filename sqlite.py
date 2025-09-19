@@ -44,6 +44,19 @@ def open(recipie):
 		if conn:
 			conn.close()
 
+def get_all_recipes():
+	"""Fetches the name and description of all recipes."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("SELECT name, description from recipies ORDER BY name")
+		return c.fetchall()
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
 def get_all_inventory():
 	"""Fetches all items from the inventory."""
 	try:
@@ -77,6 +90,23 @@ def remove_inventory_item(item_id):
 		c = conn.cursor()
 		c.execute("DELETE from inventory WHERE id = ?", (item_id,))
 		conn.commit()
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
+def add_recipe(name, description, image_url, ingredients_json, instructions_json):
+	"""Adds a new recipe to the database. Uses INSERT OR IGNORE to prevent errors on duplicate names."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("""
+            INSERT OR IGNORE INTO recipies (name, description, image_url, ingredients, instructions)
+            VALUES (?, ?, ?, ?, ?)
+        """, (name, description, image_url, ingredients_json, instructions_json))
+		conn.commit()
+		print(f"Attempted to add recipe: {name}")
 	except Error as e:
 		print(e)
 	finally:
