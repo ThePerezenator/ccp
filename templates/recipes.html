@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h2 class="title">College Cooking Pamphlet</h2>
+        <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
         <div class="links">
             <a href="/">Dashboard</a>
             <a href="/cookbook">Cook Book</a>
@@ -65,5 +65,17 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find all the ingredient list items
+            const ingredientItems = document.querySelectorAll('.ingredients-column li');
+
+            // Add a click event listener to each one
+            ingredientItems.forEach(item => {
+                item.addEventListener('click', () => item.classList.toggle('checked'));
+            });
+        });
+    </script>
 </body>
 </html>

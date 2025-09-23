@@ -187,6 +187,7 @@ a:hover {
     padding: 10px 0;
     border-bottom: 1px solid #f0f0f0;
     line-height: 1.5;
+    cursor: pointer; /* Indicate that the item is clickable */
 }
 
 /* This creates the empty checkbox */
@@ -199,6 +200,21 @@ a:hover {
     border-radius: 4px;
     margin-right: 15px;
     flex-shrink: 0;
+    transition: background-color 0.2s, border-color 0.2s; /* Add a smooth transition */
+}
+
+/* Styles for a checked ingredient */
+.ingredients-column li.checked {
+    color: #888; /* Fade the text color */
+    text-decoration: line-through; /* Strike through the text */
+}
+
+.ingredients-column li.checked::before {
+    background-color: #00102d; /* Fill the checkbox */
+    border-color: #00102d;
+    content: '✔'; /* Add a checkmark character */
+    color: white;
+    line-height: 18px; /* Vertically center the checkmark */
 }
 
 /* Styling for each method step */

@@ -17,7 +17,7 @@
 
   <div class="dashboard">
     <div class="recipes">
-      <h3>Cook Book</h3>
+      <h3><a href="/cookbook">Cook Book</a></h3>
       <div class="recipeList">
         {% for recipe in recipes %}
           <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}"><p>{{ recipe[0] }}</p></a>
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="inventory">
-      <h3>Pantry</h3>
+      <h3><a href="/pantry">Pantry</a></h3>
       <div class="inventoryList">
         {% for item in inventory %}
           <p>{{ item[1] }}: {{ item[2] }} {{ item[3] }}</p>
