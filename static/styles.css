@@ -356,3 +356,48 @@ a:hover {
     color: #721c24;
     border-color: #f5c6cb;
 }
+
+/* Cookbook Page Styles */
+.cookbook-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 1rem;
+}
+
+.cookbook-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5em;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.recipe-card {
+    background-color: white;
+    color: #00102d;
+    border-radius: 1rem;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.recipe-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.recipe-card-info {
+    padding: 1rem;
+    text-align: left;
+}

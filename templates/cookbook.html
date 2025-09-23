@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook Book</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <header>
+        <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
+        <div class="links">
+            <a href="/">Dashboard</a>
+            <a href="/cookbook">Cook Book</a>
+            <a href="/pantry">Pantry</a>
+        </div>
+    </header>
+
+    <div class="cookbook-container">
+        <h1>My Cook Book</h1>
+        <div class="recipe-grid">
+            {% for recipe in recipes %}
+                <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}" class="recipe-card">
+                    <img src="{{ recipe[2] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ recipe[0] }}">
+                    <div class="recipe-card-info">
+                        <h3>{{ recipe[0] }}</h3>
+                        <p>{{ recipe[1] }}</p>
+                    </div>
+                </a>
+            {% else %}
+                <p>No recipes found. Try importing one from the dashboard!</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -19,23 +19,28 @@ def index():
     inventory_items = sqlite.get_all_inventory()
     return render_template("index.html", recipes=all_recipes, inventory=inventory_items)
 
-@app.route("/recipie/<recipie_name>")
-def recipie(recipie_name):
+@app.route("/recipe/<recipe_name>")
+def recipe(recipe_name):
     # The previous suggestion to fix the `open` function is applied here
-    recipie_data = sqlite.open(recipie_name)
-    if recipie_data is None:
+    recipe_data = sqlite.open(recipe_name)
+    if recipe_data is None:
         # abort(404) is a handy way to trigger the 404 error handler
         abort(404)
     # The data is a tuple, e.g., (id, name, desc, ingredients_json, instructions_json, image_url)
     # We parse the JSON strings into Python objects
     full_recipe = {
-        "name": recipie_data[1],
-        "description": recipie_data[2],
-        "ingredients": json.loads(recipie_data[3]),
-        "instructions": json.loads(recipie_data[4]),
-        "image_url": recipie_data[5]
+        "name": recipe_data[1],
+        "description": recipe_data[2],
+        "ingredients": json.loads(recipe_data[3]),
+        "instructions": json.loads(recipe_data[4]),
+        "image_url": recipe_data[5]
     }
-    return render_template("recipies.html", recipe=full_recipe)
+    return render_template("recipes.html", recipe=full_recipe)
+
+@app.route("/cookbook")
+def cookbook():
+    all_recipes = sqlite.get_all_recipes()
+    return render_template("cookbook.html", recipes=all_recipes)
 
 @app.route("/pantry")
 def pantry():
@@ -93,14 +98,19 @@ def parse_gdoc_html(html_content):
             if items:
                 # Use the header's text as the category key
                 recipe['ingredients'][ingredient_header.get_text(strip=True)] = items
-    
-    instruction_header = soup.find(lambda tag: 'instruction' in tag.get_text(strip=True).lower() or 'method' in tag.get_text(strip=True).lower())
-    if instruction_header:
-        instruction_list = instruction_header.find_next(['ul', 'ol'])
-        if instruction_list:
-            steps = [li.get_text(strip=True) for li in instruction_list.find_all('li') if li.get_text(strip=True)]
-            if steps:
-                recipe['instructions'][instruction_header.get_text(strip=True)] = steps
+
+        # Start searching for instructions *after* the ingredients list to avoid re-selecting it.
+        search_area = ingredient_list or soup
+        instruction_header = search_area.find(lambda tag: 'instruction' in tag.get_text(strip=True).lower() or 'method' in tag.get_text(strip=True).lower())
+        if instruction_header:
+            instruction_list = instruction_header.find_next(['ul', 'ol'])
+            if instruction_list:
+                steps = [li.get_text(strip=True) for li in instruction_list.find_all('li') if li.get_text(strip=True)]
+                if steps:
+                    recipe['instructions'][instruction_header.get_text(strip=True)] = steps
+    else:
+        # Fallback for documents that might not have an ingredients list
+        instruction_header = soup.find(lambda tag: 'instruction' in tag.get_text(strip=True).lower() or 'method' in tag.get_text(strip=True).lower())
 
     return recipe
 
@@ -129,7 +139,7 @@ def handle_gdoc_import(url):
         )
         
         flash(f"Successfully imported '{parsed_recipe['name']}'!", 'success')
-        return redirect(url_for('recipie', recipie_name=parsed_recipe['name']))
+        return redirect(url_for('recipe', recipe_name=parsed_recipe['name']))
     except Exception as e:
         flash(f"Error fetching Google Doc: {e}", "error")
         return redirect(url_for('index'))
@@ -160,7 +170,7 @@ def import_url():
             json.dumps({"Instructions": instructions_list})
         )
         flash(f"Successfully imported '{scraper.title()}'!", 'success')
-        return redirect(url_for('recipie', recipie_name=scraper.title()))
+        return redirect(url_for('recipe', recipe_name=scraper.title()))
     except Exception as e:
         print(f"Error scraping URL: {e}")
         flash(f"Could not import recipe from that URL. The site may not be supported.", "error")

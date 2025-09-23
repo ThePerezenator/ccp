@@ -10,7 +10,7 @@
     <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
     <div class="links">
       <a href="/">Dashboard</a>
-      <a href="/recipie/Chicken and Rice">Cook Book</a>
+      <a href="/cookbook">Cook Book</a>
       <a href="/pantry">Pantry</a>
     </div>
   </header>
@@ -20,7 +20,7 @@
       <h3>Cook Book</h3>
       <div class="recipeList">
         {% for recipe in recipes %}
-          <a href="{{ url_for('recipie', recipie_name=recipe[0]) }}"><p>{{ recipe[0] }}</p></a>
+          <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}"><p>{{ recipe[0] }}</p></a>
         {% else %}
           <p>No recipes found. Try importing one!</p>
         {% endfor %}

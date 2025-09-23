@@ -7,7 +7,7 @@ def seed_database():
     c = conn.cursor()
 
     # Clear existing recipes to avoid duplicates
-    c.execute("DELETE FROM recipies")
+    c.execute("DELETE FROM recipes")
     print("Cleared existing recipes.")
 
     recipes_to_add = [
@@ -49,7 +49,7 @@ def seed_database():
 
     for recipe in recipes_to_add:
         c.execute("""
-            INSERT INTO recipies (name, description, image_url, ingredients, instructions)
+            INSERT INTO recipes (name, description, image_url, ingredients, instructions)
             VALUES (?, ?, ?, ?, ?)
         """, (
             recipe["name"],
