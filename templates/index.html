@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
+<div class="top-bar">
   <header>
     <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
     <div class="links">
@@ -14,9 +15,9 @@
       <a href="/pantry">Pantry</a>
     </div>
   </header>
-
+</div>
   <div class="dashboard">
-    <div class="recipes">
+    <div class="cookbook">
       <h3><a href="/cookbook">Cook Book</a></h3>
       <div class="recipeList">
         {% for recipe in recipes %}
