@@ -28,7 +28,7 @@ def recipe(recipe_name):
         "instructions": json.loads(recipe_data[4]),
         "image_url": recipe_data[5]
     }
-    return render_template("recipes.html", recipe=full_recipe)
+    return render_template("recipe.html", recipe=full_recipe)
 
 @app.route("/cookbook")
 def cookbook():
@@ -38,7 +38,7 @@ def cookbook():
 @app.route("/pantry")
 def pantry():
     inventory_items = sqlite.get_all_inventory()
-    return render_template("inventory.html", items=inventory_items)
+    return render_template("pantry.html", items=inventory_items)
 
 @app.route("/pantry/add", methods=["POST"])
 def add_item():
