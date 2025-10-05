@@ -3,7 +3,7 @@ services:
     firefly:
         container_name: ccp
         ports:
-            - '5000:5000'
+            - '5001:5001'
         restart: unless-stopped
         volumes:
             - '/mnt/HDDs/Docker/ccp:/ccp/'
