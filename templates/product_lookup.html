@@ -1,0 +1,7 @@
+{% block content %}
+    <form method="POST" action="{{ url_for('product_by_isbn') }}">
+        <label for="isbn_code">Enter Barcode or ISBN:</label>
+        <input type="text" id="isbn_code" name="isbn_code" required>
+        <button type="submit">Search Open Food Facts</button>
+    </form>
+{% endblock %}

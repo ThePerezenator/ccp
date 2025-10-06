@@ -1,12 +1,18 @@
-from flask import Flask, request, render_template, abort, redirect, url_for, flash
 import sqlite
+import api
+from flask import Flask, request, render_template, abort, redirect, url_for, flash
 import json
 from recipe_scrapers import scrape_me
+
 
 port = "5001"
 
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'ucf-neptune-super-cool-156-super-secure-key-ha-69'
+
+# --- Open Food Facts Helper Function ---
+# The Open Food Facts API treats ISBN (for books) as a barcode (EAN/UPC for products).
+
 
 #dashboard
 @app.route("/")
@@ -54,10 +60,6 @@ def remove_item(item_id):
     sqlite.remove_inventory_item(item_id)
     return redirect(url_for('pantry'))
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html', message="Sorry, the page you are looking for does not exist."), 404
-
 @app.route("/import/url", methods=["POST"])
 def import_url():
     url = request.form.get("recipe_url")
@@ -85,6 +87,36 @@ def import_url():
         print(f"Error scraping URL: {e}")
         flash(f"Could not import recipe from that URL. The site may not be supported.", "error")
         return redirect(url_for('index'))
+
+# --- NEW ROUTE: ISBN Lookup Form (GET) ---
+@app.route("/product/lookup")
+def product_lookup_form():
+    # This route just displays the form to enter the ISBN
+    return render_template("product_lookup.html")
+
+# --- NEW ROUTE: Process ISBN Lookup (POST) ---
+@app.route("/product/isbn", methods=["POST"])
+def product_by_isbn():
+    isbn = request.form.get("isbn_code")
+    if not isbn:
+        flash("Please enter a barcode or ISBN.", "error")
+        return redirect(url_for('product_lookup_form'))
+    
+    # Remove any dashes or spaces from the input
+    clean_isbn = isbn.replace('-', '').replace(' ', '')
+    
+    product_info = api.get_product_data(clean_isbn)
+    
+    if product_info:
+        flash(f"Found product: {product_info['name']}", "success")
+        return render_template("product_result.html", product=product_info)
+    else:
+        flash(f"Product with ISBN/Barcode **{isbn}** not found in Open Food Facts.", "error")
+        return redirect(url_for('product_lookup_form'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', message="Sorry, the page you are looking for does not exist."), 404
 
 @app.route("/healthcheck/", methods=["GET"])
 def healthcheck():
