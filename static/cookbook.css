@@ -17,18 +17,17 @@
 }
 
 .recipe-card {
-    background-color: white;
+    background-color: #e6ebf9;
     color: #00102d;
+    padding: 1rem;
     border-radius: 1rem;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 }
 
 .recipe-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
 .recipe-card img {

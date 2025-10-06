@@ -17,14 +17,13 @@
 
 /* This makes the whole recipe section a white card, like your .recipes class */
 .recipe-container {
-    background-color: white;
+    background-color: #e6ebf9;
     color: #00102d; /* Dark text for the light card */
     border-radius: 1rem;
     padding: 2rem;
     max-width: 1100px;
     margin: auto;
     text-align: left; /* Override the body's center alignment */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 /* Styles for the top part of the recipe (title, image) */
@@ -32,7 +31,7 @@
     display: flex;
     gap: 30px; /* Space between image and text */
     align-items: center;
-    border-bottom: 1px solid #eee; /* Light border for separation */
+    border-bottom: 1px solid #554761; /* Light border for separation */
     padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
 }
@@ -46,20 +45,30 @@
 }
 
 .recipe-header-info h1 {
-    margin: 0 0 10px 0;
+    margin-top: 0;
+    margin-bottom: 10px;
     font-size: 2.5em;
     color: #00102d;
 }
 
+.recipe-header-info p {
+    margin-bottom: 1.5rem;
+}
+
 .recipe-actions button {
-    padding: 8px 15px;
-    border: 1px solid #ddd;
-    background-color: #f7f7f7;
+    padding: 12px;
+    background-color: #00102d;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
-    color: #333;
-    font-size: 0.9em;
+    color: #e6ebf9;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.recipe-actions button:hover {
+  background-color: #554761;
 }
 
 /* This creates the two-column layout for ingredients and method */
@@ -74,14 +83,14 @@
 
 .method-column {
     flex: 3; /* Adjust ratio as needed */
-    border-left: 1px solid #eee;
+    border-left: 1px solid #554761;
     padding-left: 40px;
 }
 
 /* Section headings like "Ingredients" and "Method" */
 .recipe-body h2 {
     font-size: 1.2em;
-    color: #555;
+    color: #00102d;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 20px;
@@ -94,7 +103,7 @@
     margin-top: 25px;
     margin-bottom: 15px;
     font-weight: 600;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #554761;
     padding-bottom: 8px;
 }
 
@@ -110,7 +119,7 @@
     display: flex;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #554761;
     line-height: 1.5;
     cursor: pointer; /* Indicate that the item is clickable */
 }
@@ -121,23 +130,22 @@
     display: inline-block;
     width: 18px;
     height: 18px;
-    border: 1px solid #ccc;
+    border: 1px solid #554761;
     border-radius: 4px;
     margin-right: 15px;
     flex-shrink: 0;
-    transition: background-color 0.2s, border-color 0.2s; /* Add a smooth transition */
+    transition: background-color 0.2s;
 }
 
 /* Styles for a checked ingredient */
 .ingredients-column li.checked {
-    color: #888; /* Fade the text color */
+    color: #554761; /* Fade the text color */
 }
 
 .ingredients-column li.checked::before {
-    background-color: #00102d; /* Fill the checkbox */
-    border-color: #00102d;
+    background-color: #554761; /* Fill the checkbox */
     content: '✔'; /* Add a checkmark character */
-    color: white;
+    color: #e6ebf9;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -159,7 +167,7 @@
 /* This creates the styled number circle */
 .method-column li::before {
     content: counter(method-counter);
-    background-color: #eef2f9; /* Light blue background */
+    background-color: #95b4e6;
     color: #00102d;
     font-weight: bold;
     font-size: 0.9em;

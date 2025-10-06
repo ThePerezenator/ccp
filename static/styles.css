@@ -12,7 +12,7 @@ body {
 
   text-align: center;
 
-  color: white;
+  color: #e6ebf9;
 
 }
 
@@ -31,21 +31,37 @@ header {
 
 }
 
+p {
 
+  margin: 0;
+  
+}
 
 a {
 
   text-decoration: none;
 
-  color: white;
+}
+
+.links a {
+
+  color: #e6ebf9;
 
   padding: 0.5rem;
+
+  transition: color 0.2s ease-in-out;
 
 }
 
 
-a:hover {
+.links a:hover {
 
-  text-decoration: underline;
+  color: #95b4e6;
+
+}
+
+.title a {
+
+  color: #95b4e6;
 
 }
