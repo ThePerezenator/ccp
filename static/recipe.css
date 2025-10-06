@@ -131,7 +131,6 @@
 /* Styles for a checked ingredient */
 .ingredients-column li.checked {
     color: #888; /* Fade the text color */
-    text-decoration: line-through; /* Strike through the text */
 }
 
 .ingredients-column li.checked::before {
@@ -139,7 +138,9 @@
     border-color: #00102d;
     content: '✔'; /* Add a checkmark character */
     color: white;
-    line-height: 18px; /* Vertically center the checkmark */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Styling for each method step */
