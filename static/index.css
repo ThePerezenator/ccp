@@ -70,31 +70,3 @@
     gap: 0.5rem;
     margin-top: auto;
 }
-
-.import-form button {
-    padding: 12px;
-    background-color: #00102d;
-    color: #e6ebf9;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.import-form button:hover {
-  background-color: #554761;
-}
-
-.import-form input {
-    background-color: #e6ebf9;
-    padding: 10px;
-    border: 2px solid #00102d;
-    border-radius: 5px;
-    transition: border 0.2s ease-in-out;
-}
-
-.import-form input:focus-visible {
-  border: 2px solid #554761;
-  outline: none;
-}

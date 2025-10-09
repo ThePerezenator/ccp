@@ -55,22 +55,6 @@
     margin-bottom: 1.5rem;
 }
 
-.recipe-actions button {
-    padding: 12px;
-    background-color: #00102d;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px;
-    color: #e6ebf9;
-    font-size: 1em;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.recipe-actions button:hover {
-  background-color: #554761;
-}
-
 /* This creates the two-column layout for ingredients and method */
 .recipe-body {
     display: flex;
