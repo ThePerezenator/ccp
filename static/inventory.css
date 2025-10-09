@@ -1,4 +1,4 @@
-.pantry-container {
+.inventory-container {
     display: flex;
     gap: 2rem;
     max-width: 1100px;
@@ -6,7 +6,7 @@
     align-items: flex-start;
 }
 
-.pantry-list {
+.inventory-list {
     flex: 2;
     background-color: #e6ebf9;
     color: #00102d;
@@ -15,40 +15,40 @@
     text-align: left;
 }
 
-.pantry-list h2, .pantry-add-form h2 {
+.inventory-list h2, .inventory-add-form h2 {
     text-align: center;
     margin-top: 0;
 }
 
-.pantry-list table {
+.inventory-list table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.pantry-list th, .pantry-list td {
+.inventory-list th, .inventory-list td {
     padding: 12px 15px;
     border-bottom: 1px solid #00102d;
 }
 
-.pantry-list th {
+.inventory-list th {
     text-align: left;
     font-size: 0.9em;
     text-transform: uppercase;
     color: #00102d;
 }
 
-.pantry-list .remove-btn {
+.inventory-list .remove-btn {
     color: #00102d;
     font-size: 0.9em;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
 }
 
-.pantry-list .remove-btn:hover {
+.inventory-list .remove-btn:hover {
     color: #554761;
 }
 
-.pantry-add-form {
+.inventory-add-form {
     flex: 1;
     background-color: #e6ebf9;
     color: #00102d;
@@ -56,13 +56,13 @@
     padding: 2rem;
 }
 
-.pantry-add-form form {
+.inventory-add-form form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.pantry-add-form input {
+.inventory-add-form input {
     padding: 10px;
     background-color: #e6ebf9;
     border: 2px solid #00102d;
@@ -70,12 +70,12 @@
     transition: border 0.2s ease-in-out;
 }
 
-.pantry-add-form input:focus-visible {
+.inventory-add-form input:focus-visible {
     border: 2px solid #554761;
     outline: none;
 }
 
-.pantry-add-form button {
+.inventory-add-form button {
     padding: 12px;
     background-color: #00102d;
     color: #e6ebf9;
@@ -86,6 +86,6 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.pantry-add-form button:hover {
+.inventory-add-form button:hover {
     background-color: #554761;
 }

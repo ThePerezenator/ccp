@@ -10,10 +10,6 @@ port = "5001"
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'ucf-neptune-super-cool-156-super-secure-key-ha-69'
 
-# --- Open Food Facts Helper Function ---
-# The Open Food Facts API treats ISBN (for books) as a barcode (EAN/UPC for products).
-
-
 #dashboard
 @app.route("/")
 def index():
@@ -21,12 +17,18 @@ def index():
     inventory_items = sqlite.get_all_inventory()
     return render_template("index.html", recipes=all_recipes, inventory=inventory_items)
 
+#cookbook
+@app.route("/cookbook")
+def cookbook():
+    all_recipes = sqlite.get_all_recipes()
+    return render_template("cookbook.html", recipes=all_recipes)
+
+#open specefic recipie
 @app.route("/recipe/<recipe_name>")
 def recipe(recipe_name):
     recipe_data = sqlite.open(recipe_name)
     if recipe_data is None:
         abort(404)
-    # The data is a tuple, e.g., (id, name, desc, ingredients_json, instructions_json, image_url)
     full_recipe = {
         "name": recipe_data[1],
         "description": recipe_data[2],
@@ -36,30 +38,7 @@ def recipe(recipe_name):
     }
     return render_template("recipe.html", recipe=full_recipe)
 
-@app.route("/cookbook")
-def cookbook():
-    all_recipes = sqlite.get_all_recipes()
-    return render_template("cookbook.html", recipes=all_recipes)
-
-@app.route("/pantry")
-def pantry():
-    inventory_items = sqlite.get_all_inventory()
-    return render_template("pantry.html", items=inventory_items)
-
-@app.route("/pantry/add", methods=["POST"])
-def add_item():
-    name = request.form.get("name")
-    quantity = request.form.get("quantity")
-    unit = request.form.get("unit")
-    if name and quantity and unit:
-        sqlite.add_inventory_item(name, quantity, unit)
-    return redirect(url_for('pantry'))
-
-@app.route("/pantry/remove/<int:item_id>")
-def remove_item(item_id):
-    sqlite.remove_inventory_item(item_id)
-    return redirect(url_for('pantry'))
-
+#import recipe
 @app.route("/import/url", methods=["POST"])
 def import_url():
     url = request.form.get("recipe_url")
@@ -88,13 +67,26 @@ def import_url():
         flash(f"Could not import recipe from that URL. The site may not be supported.", "error")
         return redirect(url_for('index'))
 
-# --- NEW ROUTE: ISBN Lookup Form (GET) ---
-@app.route("/product/lookup")
-def product_lookup_form():
-    # This route just displays the form to enter the ISBN
-    return render_template("product_lookup.html")
+#inventory
+@app.route("/inventory")
+def inventory():
+    inventory_items = sqlite.get_all_inventory()
+    return render_template("inventory.html", items=inventory_items)
 
-# --- NEW ROUTE: Process ISBN Lookup (POST) ---
+@app.route("/inventory/add", methods=["POST"])
+def add_item():
+    name = request.form.get("name")
+    quantity = request.form.get("quantity")
+    unit = request.form.get("unit")
+    if name and quantity and unit:
+        sqlite.add_inventory_item(quantity, "", name, "", "", "")
+    return redirect(url_for('inventory'))
+
+@app.route("/inventory/remove/<int:item_id>")
+def remove_item(item_id):
+    sqlite.remove_inventory_item(item_id)
+    return redirect(url_for('inventory'))
+
 @app.route("/product/isbn", methods=["POST"])
 def product_by_isbn():
     isbn = request.form.get("isbn_code")
@@ -105,13 +97,14 @@ def product_by_isbn():
     # Remove any dashes or spaces from the input
     clean_isbn = isbn.replace('-', '').replace(' ', '')
     
-    product_info = api.get_product_data(clean_isbn)
+    product_info = api.isbn_search(clean_isbn)
     
     if product_info:
-        flash(f"Found product: {product_info['name']}", "success")
-        return render_template("product_result.html", product=product_info)
+        ##flash(f"Found product: {product_info['name']}", "success")
+        sqlite.add_ingredient("1", product_info["code"], product_info["product_name"], product_info["brands"], product_info["product_quantity"], product_info["product_quantity_unit"])
+        return render_template("inventory.html", product=product_info)
     else:
-        flash(f"Product with ISBN/Barcode **{isbn}** not found in Open Food Facts.", "error")
+        ##flash(f"Product with ISBN/Barcode **{isbn}** not found in Open Food Facts.", "error")
         return redirect(url_for('product_lookup_form'))
 
 @app.errorhandler(404)

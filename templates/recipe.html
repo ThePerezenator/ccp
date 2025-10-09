@@ -1,22 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe</title>
-    <link rel="stylesheet" href="/static/styles.css" />
-    <link rel="stylesheet" href="/static/recipe.css" />
-</head>
-<body>
-    <header>
-        <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
-        <div class="links">
-            <a href="/">Dashboard</a>
-            <a href="/cookbook">Cook Book</a>
-            <a href="/pantry">Pantry</a>
-        </div>
-    </header>
-    
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='recipe.css') }}">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flash-messages">
@@ -78,5 +61,4 @@
             });
         });
     </script>
-</body>
-</html>
+{% include 'footer.html' %}

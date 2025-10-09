@@ -1,21 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CCP</title>
-    <link rel="stylesheet" href="/static/styles.css" />
-    <link rel="stylesheet" href="/static/index.css" />
-</head>
-<body>
-  <header>
-    <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
-    <div class="links">
-      <a href="/">Dashboard</a>
-      <a href="/cookbook">Cook Book</a>
-      <a href="/pantry">Pantry</a>
-    </div>
-  </header>
-
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
   <div class="dashboard">
     <div class="recipes">
       <h3><a href="/cookbook">Cook Book</a></h3>
@@ -28,23 +12,22 @@
       </div>
     </div>
     <div class="inventory">
-      <h3><a href="/pantry">Pantry</a></h3>
+      <h3><a href="/inventory">Inventory</a></h3>
       <div class="inventoryList">
         {% for item in inventory %}
-          <p>{{ item[1] }}: {{ item[2] }} {{ item[3] }}</p>
+          <p>{{ item[4] }}: {{ item[2] }}</p>
         {% else %}
-          <p>Your pantry is empty.</p>
+          <p>Your inventory is empty.</p>
         {% endfor %}
       </div>
     </div>
     <div class="import-recipe">
       <h3>Import Recipe</h3>
-      <p>Paste a URL from a recipe blog or a public Google Doc.</p>
+      <p>Paste a URL from a recipe blog.</p>
       <form action="/import/url" method="POST" class="import-form">
         <input type="url" name="recipe_url" placeholder="https://www.allrecipes.com/..." required>
         <button type="submit">Import</button>
       </form>
     </div>
   </div>
-</body>
-</html>
+{% include 'footer.html' %}
