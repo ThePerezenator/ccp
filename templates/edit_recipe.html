@@ -1,0 +1,32 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='recipe.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='edit_recipe.css') }}">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="recipe-container">
+    <h1>Edit: {{ recipe.name }}</h1>
+    <form action="{{ url_for('edit_recipe', recipe_name=recipe.name) }}" method="POST" class="edit-form">
+        <h3>Description</h3>
+        <textarea name="description" placeholder="Description">{{ recipe.description }}</textarea>
+        <h3>Ingredients</h3>
+        <textarea name="ingredients" placeholder="Ingredients (one per line)">{{ recipe.ingredients | join('\n') }}</textarea>
+        <h3>Instructions</h3>
+        <textarea name="instructions" placeholder="Instructions (one per line)">{{ recipe.instructions | join('\n') }}</textarea>
+        <h3>Notes</h3>
+        <textarea name="notes" placeholder="Notes">{{ recipe.notes or '' }}</textarea>
+        <div>
+            <button type="submit">Save Changes</button>
+            <button><a href="{{ url_for('recipe', recipe_name=recipe.name) }}">Cancel</a></button>
+        </div>
+    </form>
+</div>
+{% include 'footer.html' %}

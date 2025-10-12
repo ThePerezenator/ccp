@@ -85,6 +85,10 @@ button:hover {
     background-color: #554761;
 }
 
+button a{
+    color:#e6ebf9;
+}
+
 input {
     padding: 10px;
     background-color: #e6ebf9;

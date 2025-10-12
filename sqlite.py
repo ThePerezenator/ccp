@@ -7,7 +7,7 @@ def create_table_recipes():
 	try:
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
-		c.execute(f'CREATE TABLE IF NOT EXISTS recipes(id INTEGER PRIMARY KEY, name TEXT UNIQUE, description TEXT, ingredients TEXT, instructions TEXT, image_url TEXT)')
+		c.execute(f'CREATE TABLE IF NOT EXISTS recipes(id INTEGER PRIMARY KEY, name TEXT UNIQUE, description TEXT, ingredients TEXT, instructions TEXT, image_url TEXT, notes TEXT)')
 		print(f"database CREATED")
 	except Error as e:
 		print(e)
@@ -36,6 +36,7 @@ def open(recipe_name):
 	try:
 		print(f"opening {recipe_name}")
 		conn = sqlite3.connect("database.db")
+		conn.row_factory = sqlite3.Row # Allows accessing columns by name
 		c = conn.cursor()
 		c.execute("SELECT * from recipes WHERE name = ?", (recipe_name,))
 		return(c.fetchone())
@@ -160,5 +161,38 @@ def add_ingredient(quantity, code, product_name, brand, single_quantity, product
 		if conn:
 			conn.close()
 
+def update_recipe(original_name, description, ingredients_json, instructions_json, notes):
+	"""Updates an existing recipe."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("""
+			UPDATE recipes
+			SET description = ?, ingredients = ?, instructions = ?, notes = ?
+			WHERE name = ?
+		""", (description, ingredients_json, instructions_json, notes, original_name))
+		conn.commit()
+		print(f"Updated recipe: {original_name}")
+	except Error as e:
+		print(f"Error updating recipe: {e}")
+	finally:
+		if conn:
+			conn.close()
+
+def migrate_add_notes_to_recipes():
+    """Adds the 'notes' column to the recipes table if it doesn't exist."""
+    try:
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("PRAGMA table_info(recipes)")
+        columns = [column[1] for column in c.fetchall()]
+        if 'notes' not in columns:
+            c.execute('ALTER TABLE recipes ADD COLUMN notes TEXT')
+            print("Added 'notes' column to 'recipes' table.")
+            conn.commit()
+    except Error as e:
+        print(f"Error during migration: {e}")
+
 create_table_recipes()
 create_table_inventory()
+migrate_add_notes_to_recipes()

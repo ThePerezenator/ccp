@@ -30,13 +30,51 @@ def recipe(recipe_name):
     if recipe_data is None:
         abort(404)
     full_recipe = {
-        "name": recipe_data[1],
-        "description": recipe_data[2],
-        "ingredients": json.loads(recipe_data[3]),
-        "instructions": json.loads(recipe_data[4]),
-        "image_url": recipe_data[5]
+        "name": recipe_data['name'],
+        "description": recipe_data['description'],
+        "ingredients": json.loads(recipe_data['ingredients']),
+        "instructions": json.loads(recipe_data['instructions']),
+        "image_url": recipe_data['image_url'],
+        "notes": recipe_data['notes']
     }
     return render_template("recipe.html", recipe=full_recipe)
+
+#edit recipe
+@app.route("/recipe/<recipe_name>/edit", methods=["GET", "POST"])
+def edit_recipe(recipe_name):
+    if request.method == "POST":
+        description = request.form.get("description")
+        # Split textareas back into lists, removing any blank lines
+        ingredients_list = [line.strip() for line in request.form.get("ingredients", "").split('\n') if line.strip()]
+        instructions_list = [line.strip() for line in request.form.get("instructions", "").split('\n') if line.strip()]
+        notes = request.form.get("notes")
+
+        # Re-create the JSON structure. This assumes a single category.
+        ingredients_json = json.dumps({"Ingredients": ingredients_list})
+        instructions_json = json.dumps({"Instructions": instructions_list})
+
+        sqlite.update_recipe(recipe_name, description, ingredients_json, instructions_json, notes)
+        flash(f"Successfully updated '{recipe_name}'!", 'success')
+        return redirect(url_for('recipe', recipe_name=recipe_name))
+
+    # For GET request, show the edit form
+    recipe_data = sqlite.open(recipe_name)
+    if recipe_data is None:
+        abort(404)
+
+    # Unpack the JSON for the textareas.
+    # The .get('Ingredients', []) provides a default empty list to prevent errors.
+    ingredients_dict = json.loads(recipe_data['ingredients'])
+    instructions_dict = json.loads(recipe_data['instructions'])
+
+    editable_recipe = {
+        "name": recipe_data['name'],
+        "description": recipe_data['description'],
+        "ingredients": ingredients_dict.get('Ingredients', []),
+        "instructions": instructions_dict.get('Instructions', []),
+        "notes": recipe_data['notes']
+    }
+    return render_template("edit_recipe.html", recipe=editable_recipe)
 
 #import recipe
 @app.route("/import/url", methods=["POST"])

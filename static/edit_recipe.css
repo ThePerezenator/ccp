@@ -1,0 +1,19 @@
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.edit-form textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #554761;
+    background-color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+h3{
+    margin: 0;
+}

@@ -19,6 +19,7 @@
                 <div class="recipe-actions">
                     <button>Meal Plan</button>
                     <button>Groceries</button>
+                    <button><a href="{{ url_for('edit_recipe', recipe_name=recipe.name) }}">Edit Recipe</a></button>
                 </div>
             </div>
         </div>
@@ -46,6 +47,11 @@
                         {% endfor %}
                     </ol>
                 {% endfor %}
+
+                {% if recipe.notes %}
+                    <h3>Notes</h3>
+                    <p style="white-space: pre-wrap;">{{ recipe.notes }}</p>
+                {% endif %}
             </div>
         </div>
     </div>
