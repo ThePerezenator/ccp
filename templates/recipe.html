@@ -12,7 +12,7 @@
 
     <div class="recipe-container">
         <div class="recipe-header">
-            <img src="{{ recipe.image_url or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ recipe.name }}">
+            <img src="{{ recipe[2] or url_for('static', filename='images/favicon.jpg') }}" alt="{{ recipe.name }}">
             <div class="recipe-header-info">
                 <h1>{{ recipe.name }}</h1>
                 <p>{{ recipe.description }}</p>
