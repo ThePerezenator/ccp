@@ -1,0 +1,39 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='recipe.css') }}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="recipe-container">
+        <div class="recipe-header">
+            {# We can use a placeholder image if Open Food Facts doesn't provide one #}
+            <img src="{{ product['image_url'] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ product['name'] }}">
+            <div class="recipe-header-info">
+                <h1>{{ product['name'] }}</h1>
+                <p><strong>Brand:</strong> {{ product['brand'] or 'N/A' }}</p>
+                <p><strong>Barcode:</strong> {{ product['code'] }}</p>
+            </div>
+        </div>
+
+        <div class="recipe-body" style="justify-content: center;">
+            <div class="ingredients-column">
+                <h2>Product Details</h2>
+                <ul>
+                    <li><strong>Current Quantity in Inventory:</strong> {{ product['quantity'] }}</li>
+                    {% if product['single_quantity'] and product['unit'] %}
+                    <li><strong>Package Size:</strong> {{ product['single_quantity'] }} {{ product['unit'] }}</li>
+                    {% endif %}
+                </ul>
+                <br>
+                <a href="{{ url_for('inventory') }}" class="button-link" style="text-decoration: none; color: #e6ebf9; background-color: #00102d; padding: 10px 15px; border-radius: 5px;">Back to Inventory</a>
+            </div>
+        </div>
+    </div>
+
+{% include 'footer.html' %}

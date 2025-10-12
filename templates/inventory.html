@@ -7,15 +7,21 @@
             <thead>
                 <tr>
                     <th>Ingredient</th>
-                    <th>Quantity</th>
+                    <th style="text-align: center;">Quantity</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item[4] }}</td>
-                    <td>{{ item[2] }}</td>
+                    <td><a href="{{ url_for('product_page', code=item[3]) }}">{{ item[4] }}</a></td>
+                    <td>
+                        <div class="quantity-controls">
+                            <a href="/inventory/decrease/{{ item[0] }}" class="quantity-btn">-</a>
+                            <span>{{ item[2] }}</span>
+                            <a href="/inventory/increase/{{ item[0] }}" class="quantity-btn">+</a>
+                        </div>
+                    </td>
                     <td><a href="/inventory/remove/{{ item[0] }}" class="remove-btn">Remove</a></td>
                 </tr>
                 {% else %}

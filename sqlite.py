@@ -20,7 +20,7 @@ def create_table_inventory():
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
 		# Using INTEGER PRIMARY KEY makes it an auto-incrementing field
-		c.execute(f'CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY, type TEXT, quantity REAL, code REAL, name TEXT, brand TEXT, single_quantity REAL, unit TEXT)')
+		c.execute(f'CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY, type TEXT, quantity REAL, code REAL UNIQUE, name TEXT, brand TEXT, single_quantity REAL, unit TEXT)')
 		print(f"inventory table CREATED")
 	except Error as e:
 		print(e)
@@ -71,6 +71,21 @@ def get_all_inventory():
 		if conn:
 			conn.close()
 
+def get_inventory_item_by_code(code):
+	"""Fetches a single inventory item from the database by its code."""
+	try:
+		conn = sqlite3.connect("database.db")
+		conn.row_factory = sqlite3.Row # Allows accessing columns by name
+		c = conn.cursor()
+		c.execute("SELECT * from inventory WHERE code = ?", (code,))
+		return c.fetchone()
+	except Error as e:
+		print(e)
+		return None
+	finally:
+		if conn:
+			conn.close()
+
 def add_inventory_item(name, quantity, unit):
 	"""Adds a new item to the inventory."""
 	try:
@@ -83,6 +98,20 @@ def add_inventory_item(name, quantity, unit):
 	finally:
 		if conn:
 			conn.close()
+
+def update_inventory_quantity(item_id, new_quantity):
+	"""Updates the quantity of a specific inventory item."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("UPDATE inventory SET quantity = ? WHERE id = ?", (new_quantity, item_id))
+		conn.commit()
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
 
 def remove_inventory_item(item_id):
 	"""Removes an item from the inventory by its ID."""
@@ -119,11 +148,12 @@ def add_ingredient(quantity, code, product_name, brand, single_quantity, product
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
 		c.execute("""
-            INSERT OR IGNORE INTO inventory (type, quantity, code, name, brand, single_quantity, unit)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, ("ingredient", quantity, code, product_name, brand, single_quantity, product_quantity_unit))
+            INSERT INTO inventory (type, quantity, code, name, brand, single_quantity, unit)
+            VALUES ('ingredient', ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(code) DO UPDATE SET quantity = quantity + 1;
+        """, (quantity, code, product_name, brand, single_quantity, product_quantity_unit))
 		conn.commit()
-		print(f"Added {product_name} to inventory")
+		print(f"Added/updated {product_name} in inventory")
 	except Error as e:
 		print(e)
 	finally:

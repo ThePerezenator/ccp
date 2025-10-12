@@ -87,12 +87,37 @@ def remove_item(item_id):
     sqlite.remove_inventory_item(item_id)
     return redirect(url_for('inventory'))
 
+@app.route("/inventory/increase/<int:item_id>")
+def increase_quantity(item_id):
+    # This is not very efficient, but simple. A better way would be one SQL query.
+    item = next((i for i in sqlite.get_all_inventory() if i[0] == item_id), None)
+    if item:
+        new_quantity = item[2] + 1
+        sqlite.update_inventory_quantity(item_id, new_quantity)
+    return redirect(url_for('inventory'))
+
+@app.route("/inventory/decrease/<int:item_id>")
+def decrease_quantity(item_id):
+    item = next((i for i in sqlite.get_all_inventory() if i[0] == item_id), None)
+    if item and item[2] > 1:
+        sqlite.update_inventory_quantity(item_id, item[2] - 1)
+    else: # If quantity is 1 or less, remove it
+        sqlite.remove_inventory_item(item_id)
+    return redirect(url_for('inventory'))
+
+@app.route("/product/<code>")
+def product_page(code):
+    product_data = sqlite.get_inventory_item_by_code(code)
+    if product_data is None:
+        abort(404)
+    return render_template("product.html", product=product_data)
+
 @app.route("/product/isbn", methods=["POST"])
 def product_by_isbn():
     isbn = request.form.get("isbn_code")
     if not isbn:
         flash("Please enter a barcode or ISBN.", "error")
-        return redirect(url_for('product_lookup_form'))
+        return redirect(url_for('inventory'))
     
     # Remove any dashes or spaces from the input
     clean_isbn = isbn.replace('-', '').replace(' ', '')
@@ -100,12 +125,13 @@ def product_by_isbn():
     product_info = api.isbn_search(clean_isbn)
     
     if product_info:
-        ##flash(f"Found product: {product_info['name']}", "success")
-        sqlite.add_ingredient("1", product_info["code"], product_info["product_name"], product_info["brands"], product_info["product_quantity"], product_info["product_quantity_unit"])
-        return render_template("inventory.html", product=product_info)
+        code = product_info["code"]
+        sqlite.add_ingredient(1, code, product_info["product_name"], product_info["brands"], product_info.get("product_quantity"), product_info.get("product_quantity_unit"))
+        flash(f"Successfully imported '{product_info['product_name']}'!", 'success')
+        return redirect(url_for('product_page', code=code))
     else:
-        ##flash(f"Product with ISBN/Barcode **{isbn}** not found in Open Food Facts.", "error")
-        return redirect(url_for('product_lookup_form'))
+        flash(f"Product with barcode '{isbn}' not found in Open Food Facts.", "error")
+        return redirect(url_for('inventory'))
 
 @app.errorhandler(404)
 def page_not_found(e):

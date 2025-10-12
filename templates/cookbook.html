@@ -2,18 +2,20 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='cookbook.css') }}">
     <div class="cookbook-container">
         <h1>My Cook Book</h1>
-        <div class="recipe-grid">
-            {% for recipe in recipes %}
-                <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}" class="recipe-card">
-                    <img src="{{ recipe[2] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ recipe[0] }}">
-                    <div class="recipe-card-info">
-                        <h3>{{ recipe[0] }}</h3>
-                        <p>{{ recipe[1] }}</p>
-                    </div>
-                </a>
-            {% else %}
-                <p>No recipes found. Try importing one from the dashboard!</p>
-            {% endfor %}
-        </div>
+        {% if recipes %}
+            <div class="recipe-grid">
+                {% for recipe in recipes %}
+                    <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}" class="recipe-card">
+                        <img src="{{ recipe[2] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ recipe[0] }}">
+                        <div class="recipe-card-info">
+                            <h3>{{ recipe[0] }}</h3>
+                            <p>{{ recipe[1] }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-recipes-message">No recipes found. Try importing one from the dashboard!</div>
+        {% endif %}
     </div>
 {% include 'footer.html' %}

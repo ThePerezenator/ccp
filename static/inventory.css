@@ -1,3 +1,13 @@
+td a {
+    color:#00102d;
+    transition:color 0.2s ease-in-out;
+    text-decoration: underline;
+}
+
+td a:hover {
+    color: #554761;
+}
+
 .inventory-container {
     display: flex;
     gap: 2rem;
@@ -88,4 +98,20 @@
 
 .inventory-add-form button:hover {
     background-color: #554761;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    text-decoration: none;
+    color: #00102d;
+    font-weight: bold;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid #00102d;
+    border-radius: 4px;
 }
