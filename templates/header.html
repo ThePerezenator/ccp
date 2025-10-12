@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Inventory</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/images/favicon.ico') }}">
     <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
@@ -12,5 +13,6 @@
             <a href="/">Dashboard</a>
             <a href="/cookbook">Cook Book</a>
             <a href="/inventory">Inventory</a>
+            <a href="{{ url_for('new_recipe') }}" class="button">New Recipe</a>
             </div>
     </header>

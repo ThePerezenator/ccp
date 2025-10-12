@@ -43,6 +43,12 @@ def recipe(recipe_name):
 @app.route("/recipe/<recipe_name>/edit", methods=["GET", "POST"])
 def edit_recipe(recipe_name):
     if request.method == "POST":
+        new_name = request.form.get("name").strip()
+        if not new_name:
+            flash("Recipe name is required.", "error")
+            # We need to pass the unsaved data back to the template
+            return render_template("edit_recipe.html", recipe=request.form)
+
         description = request.form.get("description")
         # Split textareas back into lists, removing any blank lines
         ingredients_list = [line.strip() for line in request.form.get("ingredients", "").split('\n') if line.strip()]
@@ -52,10 +58,10 @@ def edit_recipe(recipe_name):
         # Re-create the JSON structure. This assumes a single category.
         ingredients_json = json.dumps({"Ingredients": ingredients_list})
         instructions_json = json.dumps({"Instructions": instructions_list})
-
-        sqlite.update_recipe(recipe_name, description, ingredients_json, instructions_json, notes)
-        flash(f"Successfully updated '{recipe_name}'!", 'success')
-        return redirect(url_for('recipe', recipe_name=recipe_name))
+ 
+        sqlite.update_recipe(recipe_name, new_name, description, ingredients_json, instructions_json, notes)
+        flash(f"Successfully updated '{new_name}'!", 'success')
+        return redirect(url_for('recipe', recipe_name=new_name))
 
     # For GET request, show the edit form
     recipe_data = sqlite.open(recipe_name)
@@ -75,6 +81,34 @@ def edit_recipe(recipe_name):
         "notes": recipe_data['notes']
     }
     return render_template("edit_recipe.html", recipe=editable_recipe)
+
+#new recipe
+@app.route("/recipe/new", methods=["GET", "POST"])
+def new_recipe():
+    if request.method == "POST":
+        name = request.form.get("name").strip()
+        if not name:
+            flash("Recipe name is required.", "error")
+            return render_template("edit_recipe.html", recipe=request.form, is_new=True)
+
+        if sqlite.open(name):
+            flash("A recipe with this name already exists. Please choose a different name.", "error")
+            return render_template("edit_recipe.html", recipe=request.form, is_new=True)
+
+        description = request.form.get("description")
+        ingredients_list = [line.strip() for line in request.form.get("ingredients", "").split('\n') if line.strip()]
+        instructions_list = [line.strip() for line in request.form.get("instructions", "").split('\n') if line.strip()]
+        notes = request.form.get("notes")
+
+        ingredients_json = json.dumps({"Ingredients": ingredients_list})
+        instructions_json = json.dumps({"Instructions": instructions_list})
+
+        sqlite.add_recipe(name, description, "", ingredients_json, instructions_json, notes)
+        flash(f"Successfully created '{name}'!", 'success')
+        return redirect(url_for('recipe', recipe_name=name))
+
+    # For GET request, show a blank form
+    return render_template("edit_recipe.html", recipe={}, is_new=True)
 
 #import recipe
 @app.route("/import/url", methods=["POST"])

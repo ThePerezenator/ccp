@@ -126,16 +126,16 @@ def remove_inventory_item(item_id):
 	finally:
 		if conn:
 			conn.close()
-
-def add_recipe(name, description, image_url, ingredients_json, instructions_json):
+ 
+def add_recipe(name, description, image_url, ingredients_json, instructions_json, notes=""):
 	"""Adds a new recipe to the database. Uses INSERT OR IGNORE to prevent errors on duplicate names."""
 	try:
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
 		c.execute("""
-            INSERT OR IGNORE INTO recipes (name, description, image_url, ingredients, instructions)
-            VALUES (?, ?, ?, ?, ?)
-        """, (name, description, image_url, ingredients_json, instructions_json))
+            INSERT OR IGNORE INTO recipes (name, description, image_url, ingredients, instructions, notes)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (name, description, image_url, ingredients_json, instructions_json, notes))
 		conn.commit()
 		print(f"Added {name} to recipies")
 	except Error as e:
@@ -151,7 +151,7 @@ def add_ingredient(quantity, code, product_name, brand, single_quantity, product
 		c.execute("""
             INSERT INTO inventory (type, quantity, code, name, brand, single_quantity, unit)
             VALUES ('ingredient', ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(code) DO UPDATE SET quantity = quantity + 1;
+            
         """, (quantity, code, product_name, brand, single_quantity, product_quantity_unit))
 		conn.commit()
 		print(f"Added/updated {product_name} in inventory")
@@ -161,16 +161,18 @@ def add_ingredient(quantity, code, product_name, brand, single_quantity, product
 		if conn:
 			conn.close()
 
-def update_recipe(original_name, description, ingredients_json, instructions_json, notes):
+#ON CONFLICT(code) DO UPDATE SET quantity = quantity + 1;
+
+def update_recipe(original_name, new_name, description, ingredients_json, instructions_json, notes):
 	"""Updates an existing recipe."""
 	try:
 		conn = sqlite3.connect("database.db")
 		c = conn.cursor()
 		c.execute("""
 			UPDATE recipes
-			SET description = ?, ingredients = ?, instructions = ?, notes = ?
+			SET name = ?, description = ?, ingredients = ?, instructions = ?, notes = ?
 			WHERE name = ?
-		""", (description, ingredients_json, instructions_json, notes, original_name))
+		""", (new_name, description, ingredients_json, instructions_json, notes, original_name))
 		conn.commit()
 		print(f"Updated recipe: {original_name}")
 	except Error as e:

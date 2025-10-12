@@ -13,19 +13,27 @@
 {% endwith %}
 
 <div class="recipe-container">
-    <h1>Edit: {{ recipe.name }}</h1>
-    <form action="{{ url_for('edit_recipe', recipe_name=recipe.name) }}" method="POST" class="edit-form">
+    {% if is_new %}
+        <h1>Create New Recipe</h1>
+    {% else %}
+        <h1>Edit: {{ recipe.name }}</h1>
+    {% endif %}
+    <form action="{{ url_for('new_recipe') if is_new else url_for('edit_recipe', recipe_name=recipe.name) }}" method="POST" class="edit-form">
+        <h3>Name</h3>
+        <textarea name="name" placeholder="Recipe Name" required>{{ recipe.name or '' }}</textarea>
         <h3>Description</h3>
-        <textarea name="description" placeholder="Description">{{ recipe.description }}</textarea>
+        <textarea name="description" placeholder="Description">{{ recipe.description or '' }}</textarea>
         <h3>Ingredients</h3>
-        <textarea name="ingredients" placeholder="Ingredients (one per line)">{{ recipe.ingredients | join('\n') }}</textarea>
+        <textarea name="ingredients" placeholder="Ingredients (one per line)">{{ (recipe.ingredients or []) | join('\n') }}</textarea>
         <h3>Instructions</h3>
-        <textarea name="instructions" placeholder="Instructions (one per line)">{{ recipe.instructions | join('\n') }}</textarea>
+        <textarea name="instructions" placeholder="Instructions (one per line)">{{ (recipe.instructions or []) | join('\n') }}</textarea>
         <h3>Notes</h3>
         <textarea name="notes" placeholder="Notes">{{ recipe.notes or '' }}</textarea>
         <div>
-            <button type="submit">Save Changes</button>
-            <button><a href="{{ url_for('recipe', recipe_name=recipe.name) }}">Cancel</a></button>
+            <button type="submit">{{ 'Create Recipe' if is_new else 'Save Changes' }}</button>
+            {% if not is_new %}
+                <button><a href="{{ url_for('recipe', recipe_name=recipe.name) }}">Cancel</a></button>
+            {% endif %}
         </div>
     </form>
 </div>

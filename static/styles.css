@@ -35,6 +35,18 @@ header {
 
 }
 
+footer {
+  position: absolute;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #95b4e6;
+  font-size: 0.9em;
+  color: #95b4e6;
+  bottom: 25px;
+  width: 100%;
+
+}
+
 p {
 
   margin: 0;

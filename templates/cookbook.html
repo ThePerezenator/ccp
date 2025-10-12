@@ -6,7 +6,7 @@
             <div class="recipe-grid">
                 {% for recipe in recipes %}
                     <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}" class="recipe-card">
-                        <img src="{{ recipe[2] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ recipe[0] }}">
+                        <img src="{{ recipe[2] or url_for('static', filename='images/favicon.jpg') }}" alt="{{ recipe[0] }}">
                         <div class="recipe-card-info">
                             <h3>{{ recipe[0] }}</h3>
                             <p>{{ recipe[1] }}</p>
