@@ -1,5 +1,5 @@
 {% include 'header.html' %}
-<link rel="stylesheet" href="{{ url_for('static', filename='recipe.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='product.css') }}">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flash-messages">
@@ -10,19 +10,17 @@
       {% endif %}
     {% endwith %}
 
-    <div class="recipe-container">
-        <div class="recipe-header">
-            {# We can use a placeholder image if Open Food Facts doesn't provide one #}
-            <img src="{{ product['image_url'] or 'https://i.imgur.com/vDe2Tmr.png' }}" alt="{{ product['name'] }}">
-            <div class="recipe-header-info">
+    <div class="product-container">
+        <div class="product-header">
+            <div class="product-header-info">
                 <h1>{{ product['name'] }}</h1>
                 <p><strong>Brand:</strong> {{ product['brand'] or 'N/A' }}</p>
                 <p><strong>Barcode:</strong> {{ product['code'] }}</p>
             </div>
         </div>
 
-        <div class="recipe-body" style="justify-content: center;">
-            <div class="ingredients-column">
+        <div class="product-body">
+            <div class="product-details-column">
                 <h2>Product Details</h2>
                 <ul>
                     <li><strong>Current Quantity in Inventory:</strong> {{ product['quantity'] }}</li>

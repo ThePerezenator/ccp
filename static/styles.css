@@ -35,15 +35,36 @@ header {
 
 }
 
+body {
+  /* This ensures the body takes up at least the full viewport height */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#sideBar{
+  background-color: #e6ebf9;
+  position: absolute;
+  height: 86%;
+  width: 200px;
+  top: 120px;
+  left: -200px;
+
+}
+
+main {
+  flex-grow: 1; /* This makes the main content area grow to fill available space */
+}
+
 footer {
   position: absolute;
+  bottom: 25px;
+  width: 99%;
   margin-top: 3rem;
   padding-top: 1rem;
   border-top: 1px solid #95b4e6;
   font-size: 0.9em;
   color: #95b4e6;
-  bottom: 25px;
-  width: 100%;
 
 }
 

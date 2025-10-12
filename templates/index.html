@@ -15,7 +15,7 @@
       <h3><a href="/inventory">Inventory</a></h3>
       <div class="inventoryList">
         {% for item in inventory %}
-          <p>{{ item[4] }}: {{ item[2] }}</p>
+          <p><a href="{{ url_for('product_page', code=item[3]) }}">{{ item[4] }}: {{ item[2] }}</a></p>
         {% else %}
           <p>Your inventory is empty.</p>
         {% endfor %}

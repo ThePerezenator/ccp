@@ -198,8 +198,8 @@ def product_by_isbn():
     
     if product_info:
         code = product_info["code"]
-        sqlite.add_ingredient(1, code, product_info["product_name"], product_info["brands"], product_info.get("product_quantity"), product_info.get("product_quantity_unit"))
-        flash(f"Successfully imported '{product_info['product_name']}'!", 'success')
+        sqlite.add_ingredient(1, code, product_info["abbreviated_product_name"], product_info["brands"], product_info.get("product_quantity"), product_info.get("product_quantity_unit"))
+        flash(f"Successfully imported '{product_info['abbreviated_product_name']}'!", 'success')
         return redirect(url_for('product_page', code=code))
     else:
         flash(f"Product with barcode '{isbn}' not found in Open Food Facts.", "error")
@@ -215,4 +215,4 @@ def healthcheck():
     return "200", 200
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)

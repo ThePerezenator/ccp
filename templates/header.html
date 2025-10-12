@@ -5,14 +5,22 @@
     <title>Inventory</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='/images/favicon.ico') }}">
     <link rel="stylesheet" href="/static/styles.css" />
+    <script src="../static/JS folder/SideBar.js"></script>
 </head>
 <body>
     <header>
-        <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
-            <div class="links">
+        <h2 class="title"><button onclick="openSideBar()">🍔</button><a href="/">College Cooking Pamphlet</a></h2>
+        <div class="links">
             <a href="/">Dashboard</a>
             <a href="/cookbook">Cook Book</a>
             <a href="/inventory">Inventory</a>
             <a href="{{ url_for('new_recipe') }}" class="button">New Recipe</a>
-            </div>
+        </div>
     </header>
+    <div id="sideBar">
+        <a href="/">Dashboard</a><br>
+        <a href="/cookbook">Cook Book</a><br>
+        <a href="/inventory">Inventory</a><br>
+        <a href="{{ url_for('new_recipe') }}" class="button">New Recipe</a><br>
+    </div>
+    <main>
