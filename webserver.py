@@ -15,7 +15,8 @@ app.config['SECRET_KEY'] = 'ucf-neptune-super-cool-156-super-secure-key-ha-69'
 def index():
     all_recipes = sqlite.get_all_recipes()
     inventory_items = sqlite.get_all_inventory()
-    return render_template("index.html", recipes=all_recipes, inventory=inventory_items)
+    shopping_list_items = sqlite.get_shopping_list()
+    return render_template("index.html", recipes=all_recipes, inventory=inventory_items, shopping_list=shopping_list_items)
 
 #cookbook
 @app.route("/cookbook")
@@ -138,6 +139,81 @@ def import_url():
         print(f"Error scraping URL: {e}")
         flash(f"Could not import recipe from that URL. The site may not be supported.", "error")
         return redirect(url_for('index'))
+
+#shopping list
+@app.route("/shopping-list")
+def shopping_list():
+    shopping_list_items = sqlite.get_shopping_list()
+    return render_template("shopping_list.html", items=shopping_list_items)
+
+@app.route("/shopping-list/add", methods=["POST"])
+def add_to_shopping_list():
+    ingredients_from_recipe = request.form.getlist("ingredients")
+    
+    if ingredients_from_recipe:
+        inventory_items = sqlite.get_all_inventory()
+        # Create a list of lowercase inventory names for easy checking
+        inventory_names = [item[4].lower() for item in inventory_items]
+        
+        ingredients_to_add = []
+        skipped_items = []
+
+        for ingredient in ingredients_from_recipe:
+            found_in_inventory = any(inv_name in ingredient.lower() for inv_name in inventory_names)
+            if not found_in_inventory:
+                ingredients_to_add.append(ingredient)
+            else:
+                skipped_items.append(ingredient)
+
+        if ingredients_to_add:
+            sqlite.add_to_shopping_list(ingredients_to_add)
+            flash(f"Added {len(ingredients_to_add)} items to your shopping list.", "success")
+        
+        if skipped_items:
+            flash(f"Skipped {len(skipped_items)} items already in your inventory.", "info")
+        elif not ingredients_to_add:
+             flash("All recipe ingredients are already in your inventory!", "info")
+    else:
+        flash("No ingredients selected to add.", "error")
+
+    return redirect(url_for('shopping_list'))
+
+@app.route("/shopping-list/toggle/<int:item_id>")
+def toggle_shopping_list_item(item_id):
+    sqlite.toggle_shopping_list_item(item_id)
+    return redirect(url_for('shopping_list'))
+
+@app.route("/shopping-list/remove/<int:item_id>")
+def remove_shopping_list_item(item_id):
+    sqlite.remove_shopping_list_item(item_id)
+    return redirect(url_for('shopping_list'))
+
+@app.route("/shopping-list/update-all", methods=["POST"])
+def update_all_shopping_list_items():
+    for key, new_name in request.form.items():
+        if key.startswith("name-"):
+            item_id = key.split("-")[1]
+            if new_name.strip():
+                sqlite.update_shopping_list_item_name(item_id, new_name.strip())
+    flash("Shopping list updated successfully.", "success")
+    return redirect(url_for('shopping_list'))
+
+
+@app.route("/shopping-list/update/<int:item_id>", methods=["POST"])
+def update_shopping_list_item(item_id):
+    new_name = request.form.get("new_name", "").strip()
+    if new_name:
+        sqlite.update_shopping_list_item_name(item_id, new_name)
+        flash("Item updated successfully.", "success")
+    else:
+        flash("Item name cannot be empty.", "error")
+    return redirect(url_for('shopping_list'))
+
+@app.route("/shopping-list/clear-checked", methods=["POST"])
+def clear_checked_shopping_list_items():
+    sqlite.remove_checked_shopping_list_items()
+    flash("Cleared all checked items from your shopping list.", "success")
+    return redirect(url_for('shopping_list'))
 
 #inventory
 @app.route("/inventory")

@@ -15,6 +15,18 @@ def create_table_recipes():
 		if conn:
 			conn.close()
 
+def create_table_shopping_list():
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute(f'CREATE TABLE IF NOT EXISTS shopping_list(id INTEGER PRIMARY KEY, name TEXT UNIQUE, checked INTEGER DEFAULT 0)')
+		print(f"shopping_list table CREATED")
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
 def create_table_inventory():
 	try:
 		conn = sqlite3.connect("database.db")
@@ -195,6 +207,88 @@ def migrate_add_notes_to_recipes():
     except Error as e:
         print(f"Error during migration: {e}")
 
+def get_shopping_list():
+	"""Fetches all items from the shopping list."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("SELECT id, name, checked from shopping_list ORDER BY name")
+		return c.fetchall()
+	except Error as e:
+		print(e)
+		return []
+	finally:
+		if conn:
+			conn.close()
+
+def add_to_shopping_list(items):
+	"""Adds multiple items to the shopping list, ignoring duplicates."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		# Prepare a list of tuples for executemany
+		items_to_insert = [(item,) for item in items]
+		c.executemany("INSERT OR IGNORE INTO shopping_list (name) VALUES (?)", items_to_insert)
+		conn.commit()
+	except Error as e:
+		print(f"Error adding to shopping list: {e}")
+	finally:
+		if conn:
+			conn.close()
+
+def toggle_shopping_list_item(item_id):
+	"""Toggles the checked state of a shopping list item."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		# Toggle the 'checked' value (0 to 1, 1 to 0)
+		c.execute("UPDATE shopping_list SET checked = 1 - checked WHERE id = ?", (item_id,))
+		conn.commit()
+	except Error as e:
+		print(f"Error toggling shopping list item: {e}")
+	finally:
+		if conn:
+			conn.close()
+
+def remove_shopping_list_item(item_id):
+	"""Removes an item from the shopping list by its ID."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("DELETE from shopping_list WHERE id = ?", (item_id,))
+		conn.commit()
+	except Error as e:
+		print(e)
+	finally:
+		if conn:
+			conn.close()
+
+def update_shopping_list_item_name(item_id, new_name):
+	"""Updates the name of a specific shopping list item."""
+	try:
+		conn = sqlite3.connect("database.db")
+		c = conn.cursor()
+		c.execute("UPDATE shopping_list SET name = ? WHERE id = ?", (new_name, item_id))
+		conn.commit()
+	except Error as e:
+		print(f"Error updating shopping list item name: {e}")
+	finally:
+		if conn:
+			conn.close()
+
+
+def remove_checked_shopping_list_items():
+    """Removes all checked items from the shopping list."""
+    try:
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("DELETE FROM shopping_list WHERE checked = 1")
+        conn.commit()
+    except Error as e:
+        print(f"Error removing checked shopping list items: {e}")
+
+
 create_table_recipes()
 create_table_inventory()
+create_table_shopping_list()
 migrate_add_notes_to_recipes()

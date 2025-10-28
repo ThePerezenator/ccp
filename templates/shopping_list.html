@@ -1,0 +1,94 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='shopping_list.css') }}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+<div class="shopping-list-container">
+    <div class="shopping-list-main">
+        <div class="shopping-list">
+            <h2>My Shopping List</h2>
+            <form id="shopping-list-form" action="{{ url_for('update_all_shopping_list_items') }}" method="POST">
+                <table>
+                    <tbody>
+                        {% for item in items %}
+                        <tr class="{{ 'checked' if item[2] else '' }}">
+                            <td class="checkbox-cell">
+                                <a href="/shopping-list/toggle/{{ item[0] }}" class="checkbox-link">
+                                    <div class="checkbox"></div>
+                                </a>
+                            </td>
+                            <td class="name-cell">
+                                <span>{{ item[1] }}</span>
+                                <input type="text" name="name-{{ item[0] }}" value="{{ item[1] }}" class="edit-input" style="display: none;">
+                            </td>
+                            <td class="actions-cell">
+                                <a href="/shopping-list/remove/{{ item[0] }}" class="remove-btn">Remove</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3">Your shopping list is empty.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+            <div class="list-actions">
+                {% if items %}
+                    <button type="button" id="edit-list-btn" class="edit-list-btn">Edit List</button>
+                    <form action="{{ url_for('clear_checked_shopping_list_items') }}" method="POST">
+                        <button type="submit" class="clear-btn">Clear Checked Items</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="shopping-list-sidebar">
+        <h2>Add Item</h2>
+        <form action="{{ url_for('add_to_shopping_list') }}" method="POST" class="add-item-form">
+            <input type="text" name="ingredients" placeholder="e.g., 1kg Flour" required>
+            <button type="submit">Add to List</button>
+        </form>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editButton = document.getElementById('edit-list-btn');
+    const listForm = document.getElementById('shopping-list-form');
+    let isEditMode = false;
+
+    if (editButton) {
+        editButton.addEventListener('click', function(event) {
+            // If we are entering edit mode, prevent the form from submitting.
+            isEditMode = !isEditMode;
+            const nameCells = listForm.querySelectorAll('.name-cell');
+
+            nameCells.forEach(cell => {
+                const span = cell.querySelector('span');
+                const input = cell.querySelector('input.edit-input');
+                span.style.display = isEditMode ? 'none' : 'inline';
+                input.style.display = isEditMode ? 'inline-block' : 'none';
+            });
+
+            if (isEditMode) {
+                this.textContent = 'Save Changes';
+                this.type = 'submit';
+                this.setAttribute('form', 'shopping-list-form');
+                event.preventDefault(); // Stop the form from submitting on this click
+            } else {
+                // This branch will be hit if the user clicks "Save Changes"
+                // The form submission will handle the rest.
+                // If we wanted a "Cancel" button, logic would go here.
+            }
+        });
+    }
+});
+</script>
+{% include 'footer.html' %}

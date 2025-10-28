@@ -1,0 +1,183 @@
+.flash-messages {
+    max-width: 800px;
+    margin: 0 auto 1rem auto;
+}
+.flash {
+    padding: 1rem;
+    border-radius: 5px;
+    background-color: #d4edda; /* Green for success */
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.flash.error {
+    background-color: #f8d7da; /* Red for error */
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+.flash.info {
+    background-color: #d1ecf1; /* Blue for info */
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+.shopping-list-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 800px;
+    margin: auto;
+    align-items: flex-start;
+}
+
+.shopping-list-main {
+    flex: 2;
+}
+
+.shopping-list {
+    background-color: #e6ebf9;
+    color: #00102d;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: left;
+}
+
+.shopping-list h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.shopping-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shopping-list td {
+    padding: 12px 5px;
+    border-bottom: 1px solid #554761;
+    vertical-align: middle;
+}
+
+.shopping-list tr.checked .name-cell {
+    text-decoration: line-through;
+    color: #554761;
+}
+
+.checkbox-cell { width: 40px; }
+.actions-cell { width: 80px; text-align: right; }
+
+.checkbox-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #00102d;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.checked .checkbox {
+    background-color: #00102d;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6ebf9' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 14px 14px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.actions-cell button, .actions-cell a {
+    font-size: 0.9em;
+    transition: color 0.2s ease-in-out;
+}
+
+.remove-btn {
+    color: #00102d;
+    text-decoration: none;
+}
+
+.remove-btn:hover {
+    color: #554761;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #554761;
+    border-radius: 3px;
+    font-size: 1em;
+    font-family: inherit;
+}
+
+.list-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.clear-btn {
+    background-color: #00102d;
+    color: #e6ebf9;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out;
+}
+.clear-btn:hover {
+    background-color: #554761;
+}
+
+.edit-list-btn {
+    background-color: #95b4e6;
+    color: #00102d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out;
+}
+.edit-list-btn:hover {
+    background-color: #7c9ed1;
+}
+
+.shopping-list-sidebar {
+    flex: 1;
+    background-color: #e6ebf9;
+    color: #00102d;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.shopping-list-sidebar h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.add-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.add-item-form input {
+    padding: 10px;
+    background-color: #e6ebf9;
+    border: 2px solid #00102d;
+    border-radius: 5px;
+    transition: border 0.2s ease-in-out;
+}
+
+.add-item-form button {
+    padding: 12px;
+    background-color: #00102d;
+    color: #e6ebf9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}

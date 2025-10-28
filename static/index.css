@@ -11,7 +11,7 @@
     color: #00102d; /* Make links inside dashboard cards dark */
 }
 
-.recipes, .inventory {
+.recipes, .inventory, .shoppingList {
     background-color: #e6ebf9;
     color: #00102d;
     padding: 1rem;
@@ -22,24 +22,29 @@
 
 }
 
-.recipes:hover, .inventory:hover {
+.recipes:hover, .inventory:hover, .shopping:hover {
     transform: translateY(-5px);
 }
 
-.recipes a, .inventory a{
+.recipes a, .inventory a, .shopping a{
     transition: color 0.2s ease-in-out;
 }
 
-.recipes a:hover, .inventory a:hover{
+.recipes a:hover, .inventory a:hover, .shopping a:hover{
   color: #554761;
 }
 
-.recipeList, .inventoryList {
+.recipeList, .inventoryList, .shoppingList {
     padding: 1rem;
 }
 
-.recipeList p, .inventoryList p {
+.recipeList p, .inventoryList p, .shoppingList p {
     padding-bottom: 1rem;
+}
+
+.shoppingList p.checked {
+    text-decoration: line-through;
+    color: #554761;
 }
 
 /* Import Recipe Form Styles */

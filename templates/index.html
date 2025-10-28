@@ -29,5 +29,15 @@
         <button type="submit">Import</button>
       </form>
     </div>
+    <div class="shopping">
+      <h3><a>Shopping List</a></h3>
+      <div class="shoppingList">
+        {% for item in shopping_list %}
+          <p class="{{ 'checked' if item[2] else '' }}">{{ item[1] }}</p>
+        {% else %}
+          <p>Your shopping list is empty.</p>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 {% include 'footer.html' %}
