@@ -30,8 +30,8 @@
       </form>
     </div>
     <div class="shopping">
-      <h3><a>Shopping List</a></h3>
       <div class="shoppingList">
+        <h3><a href="/shopping-list">Shopping List</a></h3>
         {% for item in shopping_list %}
           <p class="{{ 'checked' if item[2] else '' }}">{{ item[1] }}</p>
         {% else %}
