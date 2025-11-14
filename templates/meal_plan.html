@@ -1,0 +1,161 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+<div class="meal-plan-container">
+    <h1>Meal Plan</h1>
+    
+    <div class="meal-plan-content">
+        <div class="add-meal-section">
+            <h2>Add Meal to Plan</h2>
+            <form action="{{ url_for('add_meal_to_plan') }}" method="POST">
+                <label for="recipe_name">Recipe:</label>
+                <select name="recipe_name" id="recipe_name" required>
+                    <option value="">Select a recipe...</option>
+                    {% for recipe in recipes %}
+                        <option value="{{ recipe[0] }}">{{ recipe[0] }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" required>
+                
+                <label for="meal_type">Meal Type:</label>
+                <select name="meal_type" id="meal_type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner" selected>Dinner</option>
+                    <option value="snack">Snack</option>
+                </select>
+                
+                <button type="submit">Add to Meal Plan</button>
+            </form>
+        </div>
+        
+        <div class="meal-plan-list">
+            <h2>Planned Meals</h2>
+            {% if meals %}
+                <form action="{{ url_for('generate_shopping_list_from_meal_plan') }}" method="POST" style="margin-bottom: 1rem;">
+                    <button type="submit">Generate Shopping List from Meal Plan</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Meal Type</th>
+                            <th>Recipe</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for meal in meals %}
+                        <tr>
+                            <td>{{ meal[2] }}</td>
+                            <td>{{ meal[3]|title }}</td>
+                            <td><a href="{{ url_for('recipe', recipe_name=meal[1]) }}">{{ meal[1] }}</a></td>
+                            <td><a href="{{ url_for('remove_meal_from_plan', meal_id=meal[0]) }}" class="remove-btn">Remove</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No meals planned yet. Add a meal above!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.meal-plan-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.meal-plan-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.add-meal-section {
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.add-meal-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.add-meal-section label {
+    font-weight: bold;
+}
+
+.add-meal-section select,
+.add-meal-section input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-meal-section button {
+    padding: 0.75rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.add-meal-section button:hover {
+    background: #45a049;
+}
+
+.meal-plan-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.meal-plan-list table th,
+.meal-plan-list table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.meal-plan-list table th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.remove-btn {
+    color: #d32f2f;
+    text-decoration: none;
+}
+
+.remove-btn:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .meal-plan-content {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% include 'footer.html' %}
+
