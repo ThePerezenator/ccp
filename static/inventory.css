@@ -115,3 +115,65 @@ td a:hover {
     border: 1px solid #00102d;
     border-radius: 4px;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .inventory-container {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 0.5rem;
+    }
+
+    .inventory-list,
+    .inventory-add-form {
+        width: 100%;
+    }
+
+    .inventory-list table {
+        font-size: 0.9em;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .inventory-list th,
+    .inventory-list td {
+        padding: 10px 8px;
+        white-space: nowrap;
+    }
+
+    .inventory-list th:nth-child(2),
+    .inventory-list td:nth-child(2) {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-container {
+        padding: 0.25rem;
+    }
+
+    .inventory-list,
+    .inventory-add-form {
+        padding: 1rem;
+    }
+
+    .inventory-list h2,
+    .inventory-add-form h2 {
+        font-size: 1.3em;
+    }
+
+    .inventory-list table {
+        font-size: 0.85em;
+    }
+
+    .inventory-list th,
+    .inventory-list td {
+        padding: 8px 4px;
+        font-size: 0.9em;
+    }
+
+    .quantity-controls {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}

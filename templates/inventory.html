@@ -1,5 +1,16 @@
 {% include 'header.html' %}
 <link rel="stylesheet" href="{{ url_for('static', filename='inventory.css') }}">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <div class="inventory-container">
     <div class="inventory-list">
         <h2>My Inventory</h2>
@@ -14,36 +25,244 @@
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td><a href="{{ url_for('product_page', code=item[3]) }}">{{ item[4] }}</a></td>
+                    <td>
+                        <a href="#" class="ingredient-link" data-name="{{ item[1] }}" data-description="Sample description for {{ item[1] }}">{{ item[1] }}</a>
+                    </td>
                     <td>
                         <div class="quantity-controls">
-                            <a href="/inventory/decrease/{{ item[0] }}" class="quantity-btn">-</a>
-                            <span>{{ item[2] }}</span>
-                            <a href="/inventory/increase/{{ item[0] }}" class="quantity-btn">+</a>
+                            <a href="{{ url_for('inventory.inventory_action', action='decrease', item_id=item[0]) }}" class="quantity-btn">-</a>
+                            <span>{{ item[5] }}</span>
+                            <a href="{{ url_for('inventory.inventory_action', action='increase', item_id=item[0]) }}" class="quantity-btn">+</a>
                         </div>
                     </td>
-                    <td><a href="/inventory/remove/{{ item[0] }}" class="remove-btn">Remove</a></td>
+                    <td>
+                        <a href="{{ url_for('inventory.inventory_action', action='remove', item_id=item[0]) }}" class="remove-btn">Remove</a>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4">Your Inventory is empty. Add an item below!</td>
+                    <td colspan="3">Your Inventory is empty. Add an item below!</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <div class="inventory-add-form">
+
+   <div class="inventory-add-form">
         <h2>Add Item</h2>
-        <form action="/inventory/add" method="POST">
-            <input type="text" name="name" placeholder="Ingredient Name" required>
-            <input type="number" step="0.1" name="quantity" placeholder="Quantity" required>
-            <button type="submit">Add to Inventory</button>
-        </form>
-        <form action="{{ url_for('product_by_isbn') }}" method="POST">
-            <label for="isbn_code">Enter Barcode or ISBN:</label>
-            <input type="text" id="isbn_code" name="isbn_code" required>
-            <button type="submit">Search Open Food Facts</button>
-        </form>
+        <div>
+            <input type="text" id="new-inventory-name" placeholder="Ingredient Name">
+            <input type="text" id="new-inventory-quantity" placeholder="Quantity">
+            <button type="button" id="add-inventory-btn">Add Ingredient</button>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- Modal -->
+<div id="ingredientModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle">Ingredient Title</h2>
+
+        <div>
+            <label for="isbnInput">Add ISBN:</label>
+            <input type="text" id="isbnInput" placeholder="Enter ISBN">
+            <button id="addIsbnBtn">Add</button>
+        </div>
+
+        <div>
+            <label for="existingDropdown">Select existing item:</label>
+            <select id="existingDropdown">
+                <option value="">--Select--</option>
+            </select>
+        </div>
+
+        <div id="nutritionInfo">
+            <h3>Nutrition Facts</h3>
+            <pre id="nutritionText">Select item to view nutrition facts</pre>
+        </div>
+
+        <div class="modal-buttons">
+
+            <button id="deleteBtn">Delete</button>
+            <button id="closeBtn">Close</button>
+        </div>
+    </div>
+</div>
+
 {% include 'footer.html' %}
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    color: black;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+.modal-buttons button {
+    margin: 5px;
+    padding: 8px 16px;
+}
+</style>
+
+<script>
+const modal = document.getElementById("ingredientModal");
+const modalTitle = document.getElementById("modalTitle");
+const closeBtn = modal.querySelector(".close");
+const closeButton = document.getElementById("closeBtn");
+const dropdown = document.getElementById("existingDropdown");
+const nutritionText = document.getElementById("nutritionText");
+const addIsbnBtn = document.getElementById("addIsbnBtn");
+const isbnInput = document.getElementById("isbnInput");
+const deleteBtn = document.getElementById("deleteBtn");
+
+// Show modal when ingredient clicked
+document.querySelectorAll(".ingredient-link").forEach(link => {
+    link.addEventListener("click", async function(e) {
+        e.preventDefault();
+        const ingredientName = this.dataset.name;
+        modalTitle.textContent = ingredientName;
+
+        const response = await fetch(`/api/ingredient_info?name=${encodeURIComponent(ingredientName)}`);
+        const data = await response.json();
+
+        dropdown.innerHTML = '<option value="">--Select--</option>';
+        data.items.forEach(item => {
+            dropdown.innerHTML += `<option value="${item.isbn}">${item.brand} - ${item.isbn}</option>`;
+        });
+
+        nutritionText.textContent = "Select a brand/ISBN to view nutrition facts";
+        modal.style.display = "block";
+    });
+});
+
+// Close modal
+closeBtn.onclick = () => modal.style.display = "none";
+closeButton.onclick = () => modal.style.display = "none";
+window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
+
+// Show nutrition info when dropdown changes
+dropdown.addEventListener("change", async function() {
+    const isbn = this.value;
+    const ingredientName = modalTitle.textContent;
+    if (!isbn) {
+        nutritionText.textContent = "Select a brand/ISBN to view nutrition facts";
+        return;
+    }
+
+    const response = await fetch(`/api/nutrition?name=${encodeURIComponent(ingredientName)}&isbn=${encodeURIComponent(isbn)}`);
+    const data = await response.json();
+    const nutrition = data.nutrition;
+
+    if (!nutrition || Object.keys(nutrition).length === 0) {
+        nutritionText.textContent = "No nutrition data available for this selection.";
+        return;
+    }
+
+    let display = "";
+    for (const [key, value] of Object.entries(nutrition)) {
+        const label = key.replace(/_/g, ' ').replace(/-serving/g, ' (per serving)').replace(/kcal/g, ' kcal');
+        display += `${label}: ${value}\n`;
+    }
+    nutritionText.textContent = display;
+});
+
+// Add new ISBN
+addIsbnBtn.addEventListener("click", async function() {
+    const isbn = isbnInput.value.trim();
+    const ingredientName = modalTitle.textContent;
+    if (!isbn) return alert("Enter an ISBN!");
+
+    const response = await fetch('/api/add_isbn', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({name: ingredientName, isbn})
+    });
+
+    const result = await response.json();
+    if (result.status === "ok") {
+        alert("ISBN added successfully!");
+        dropdown.innerHTML += `<option value="${isbn}">New ISBN - ${isbn}</option>`;
+        isbnInput.value = "";
+    } else {
+        alert("Failed to add ISBN.");
+    }
+});
+
+// Delete selected brand/ISBN
+deleteBtn.addEventListener("click", async function() {
+    const ingredientName = modalTitle.textContent;
+    const isbn = dropdown.value;
+    if (!isbn) {
+        alert("Please select a brand/ISBN to delete.");
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to delete the brand/ISBN "${isbn}" for ingredient "${ingredientName}"?`)) {
+        return;
+    }
+
+    const response = await fetch('/api/delete_brand', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: ingredientName, isbn})
+    });
+
+    const result = await response.json();
+    if (result.status === "ok") {
+        alert("Brand/ISBN deleted successfully.");
+        const optionToRemove = dropdown.querySelector(`option[value="${isbn}"]`);
+        if (optionToRemove) {
+            optionToRemove.remove();
+        }
+        dropdown.value = "";
+        nutritionText.textContent = "Select a brand/ISBN to view nutrition facts";
+    } else {
+        alert("Failed to delete brand/ISBN.");
+    }
+});
+document.getElementById("add-inventory-btn").addEventListener("click", async () => {
+    const name = document.getElementById("new-inventory-name").value.trim();
+    const quantity = document.getElementById("new-inventory-quantity").value.trim();
+
+    if (!name || !quantity) return alert("Enter both name and quantity!");
+
+    const response = await fetch("/inventory/add", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, quantity})
+    });
+
+    if (response.ok) {
+        window.location.reload(); // reload to show the new item
+    } else {
+    }
+});
+
+</script>

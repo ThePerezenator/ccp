@@ -75,3 +75,30 @@
     gap: 0.5rem;
     margin-top: auto;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .recipes, .inventory, .shoppingList, .import-recipe {
+        padding: 0.75rem;
+    }
+
+    .recipeList, .inventoryList, .shoppingList {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard {
+        padding: 0.25rem;
+    }
+
+    .recipes h3, .inventory h3, .shopping h3, .import-recipe h3 {
+        font-size: 1.2em;
+    }
+}

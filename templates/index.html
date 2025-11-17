@@ -1,39 +1,42 @@
 {% include 'header.html' %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
   <div class="dashboard">
     <div class="recipes">
       <h3><a href="/cookbook">Cook Book</a></h3>
       <div class="recipeList">
         {% for recipe in recipes %}
-          <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}"><p>{{ recipe[0] }}</p></a>
+          <a href="{{ url_for('recipe.recipe_action', action='view', recipe_name=recipe[1]) }}"><p>{{ recipe[1] }}</p></a>
         {% else %}
           <p>No recipes found. Try importing one!</p>
         {% endfor %}
       </div>
     </div>
     <div class="inventory">
-      <h3><a href="/inventory">Inventory</a></h3>
+      <h3><a href="{{ url_for('inventory.inventory_action', action='view') }}">Inventory</a></h3>
       <div class="inventoryList">
         {% for item in inventory %}
-          <p><a href="{{ url_for('product_page', code=item[3]) }}">{{ item[4] }}: {{ item[2] }}</a></p>
+          <p><a>{{ item[1] }}: {{ item[5] }}</a></p>
         {% else %}
           <p>Your inventory is empty.</p>
         {% endfor %}
       </div>
     </div>
-    <div class="import-recipe">
-      <h3>Import Recipe</h3>
-      <p>Paste a URL from a recipe blog.</p>
-      <form action="/import/url" method="POST" class="import-form">
-        <input type="url" name="recipe_url" placeholder="https://www.allrecipes.com/..." required>
-        <button type="submit">Import</button>
-      </form>
-    </div>
     <div class="shopping">
       <div class="shoppingList">
-        <h3><a href="/shopping-list">Shopping List</a></h3>
-        {% for item in shopping_list %}
-          <p class="{{ 'checked' if item[2] else '' }}">{{ item[1] }}</p>
+        <h3><a href="{{ url_for('groceries.groceries_action', action='view') }}">Groceries</a></h3>
+        {% for item in groceries %}
+          <p class="{{ 'checked' if item[2] else '' }}">{{ item[2] }}</p>
         {% else %}
           <p>Your shopping list is empty.</p>
         {% endfor %}

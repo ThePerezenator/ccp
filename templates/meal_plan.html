@@ -1,0 +1,76 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='meal_plan.css') }}">
+    <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %} -->
+
+<div class="meal-plan-container">
+    <h1>Meal Plan</h1>
+    
+    <div class="meal-plan-content">
+        <div class="add-meal-section">
+            <h2>Add Meal to Plan</h2>
+            <form method="POST">
+                <label for="recipe_name">Recipe:</label>
+                <select name="recipe_name" id="recipe_name" required>
+                    <option value="">Select a recipe...</option>
+                    <!-- {% for recipe in recipes %}
+                        <option value="{{ recipe[0] }}">{{ recipe[0] }}</option>
+                    {% endfor %} -->
+                </select>
+                
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" required>
+                
+                <label for="meal_type">Meal Type:</label>
+                <select name="meal_type" id="meal_type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner" selected>Dinner</option>
+                    <option value="snack">Snack</option>
+                </select>
+                
+                <button type="submit">Add to Meal Plan</button>
+            </form>
+        </div>
+        
+        <div class="meal-plan-list">
+            <h2>Planned Meals</h2>
+            <!-- {% if meals %} -->
+                <form action="{{ url_for('generate_shopping_list_from_meal_plan') }}" method="POST">
+                    <button type="submit">Generate Shopping List from Meal Plan</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Meal Type</th>
+                            <th>Recipe</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {% for meal in meals %} -->
+                        <tr>
+                            <!-- <td>{{ meal[2] }}</td> -->
+                            <!-- <td>{{ meal[3]|title }}</td> -->
+                            <!-- <td><a href="{{ url_for('recipe', recipe_name=meal[1]) }}">{{ meal[1] }}</a></td> -->
+                            <td><a href="{{ url_for('remove_meal_from_plan', meal_id=meal[0]) }}" class="remove-btn">Remove</a></td>
+                        </tr>
+                        <!-- {% endfor %} -->
+                    </tbody>
+                </table>
+            <!-- {% else %} -->
+                <p>No meals planned yet. Add a meal above!</p>
+            <!-- {% endif %} -->
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}

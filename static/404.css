@@ -1,0 +1,42 @@
+.error-container {
+    background-color: #e6ebf9;
+    color: #00102d;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+.error-container h1 {
+    margin-top: 0;
+}
+
+.error-container a {
+    color: #00102d;
+    text-decoration: underline;
+}
+
+.error-container a:hover {
+    color: #554761;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .error-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-container {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+
+    .error-container h1 {
+        font-size: 1.5em;
+    }
+}
+

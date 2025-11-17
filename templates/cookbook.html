@@ -1,21 +1,70 @@
 {% include 'header.html' %}
-<link rel="stylesheet" href="{{ url_for('static', filename='cookbook.css') }}">
-    <div class="cookbook-container">
-        <h1>My Cook Book</h1>
-        {% if recipes %}
-            <div class="recipe-grid">
-                {% for recipe in recipes %}
-                    <a href="{{ url_for('recipe', recipe_name=recipe[0]) }}" class="recipe-card">
-                        <img src="{{ recipe[2] or url_for('static', filename='images/favicon.jpg') }}" alt="{{ recipe[0] }}">
-                        <div class="recipe-card-info">
-                            <h3>{{ recipe[0] }}</h3>
-                            <p>{{ recipe[1] }}</p>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="no-recipes-message">No recipes found. Try importing one from the dashboard!</div>
-        {% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
     </div>
+  {% endif %}
+{% endwith %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='cookbook.css') }}">
+<div class="cookbook-container">
+    <h1>My Cook Book</h1>
+
+    {% if recipes %}
+        <!-- Grid for recipes and New Recipe card -->
+        <div class="recipe-grid">
+            {% for recipe in recipes %}
+                <a href="{{ url_for('recipe.recipe_action', action='view', recipe_name=recipe[1]) }}" class="recipe-card">
+                    <img src="{{ recipe[5] or url_for('static', filename='images/favicon.jpg') }}" alt="{{ recipe[0] }}">
+                    <div class="recipe-card-info">
+                        <h3>{{ recipe[1] }}</h3>
+                        <p>{{ recipe[2] }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+
+            <!-- New Recipe card in the grid -->
+            <div class="recipe-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                <h3>New Recipe</h3>
+                <form action="{{ url_for('recipe.recipe_action', action='import') }}" method="POST">
+                    <input type="text" name="recipe_url" placeholder="Enter recipe URL">
+                    <button type="submit">Import Recipe</button>
+                </form>
+                <p style="margin-top:1rem;">or</p>
+                <form action="{{ url_for('recipe.recipe_action', action='new') }}" method="POST" style="margin-top:1rem;">
+                    <input type="hidden" name="name" value="New recipe">
+                    <input type="hidden" name="description" value="">
+                    <input type="hidden" name="ingredients" value="">
+                    <input type="hidden" name="instructions" value="">
+                    <input type="hidden" name="notes" value="">
+                    <button type="submit">Create New Recipe</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <!-- Centered New Recipe card when no recipes exist -->
+        <div style="display:flex; justify-content:center; align-items:center; min-height:300px;">
+            <div class="recipe-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; max-width:300px;">
+                <h3>New Recipe</h3>
+                <form action="{{ url_for('recipe.recipe_action', action='import') }}" method="POST">
+                    <input type="text" name="recipe_url" placeholder="Enter recipe URL">
+                    <button type="submit">Import Recipe</button>
+                </form>
+                <p style="margin-top:1rem;">or</p>
+                <form action="{{ url_for('recipe.recipe_action', action='new') }}" method="POST" style="margin-top:1rem;">
+                    <input type="hidden" name="name" value="New recipe">
+                    <input type="hidden" name="description" value="">
+                    <input type="hidden" name="ingredients" value="">
+                    <input type="hidden" name="instructions" value="">
+                    <input type="hidden" name="notes" value="">
+                    <button type="submit">Create New Recipe</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% include 'footer.html' %}

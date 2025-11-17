@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='/images/favicon.ico') }}">
     <link rel="stylesheet" href="/static/styles.css" />
@@ -13,16 +14,15 @@
         <div class="links">
             <a href="/">Dashboard</a>
             <a href="/cookbook">Cook Book</a>
-            <a href="/shopping-list">Shopping List</a>
-            <a href="/inventory">Inventory</a>
-            <a href="{{ url_for('new_recipe') }}" class="button">New Recipe</a>
+            <a href="{{ url_for('inventory.inventory_action', action='view') }}">Inventory</a>
+            <a href="{{ url_for('groceries.groceries_action', action='view') }}">Groceries</a>
         </div>
     </header>
     <div id="sideBar">
         <a href="/">Dashboard</a><br>
-        <a href="/shopping-list">Shopping List</a><br>
         <a href="/cookbook">Cook Book</a><br>
-        <a href="/inventory">Inventory</a><br>
-        <a href="{{ url_for('new_recipe') }}" class="button">New Recipe</a><br>
+        <a href="{{ url_for('inventory.inventory_action', action='view') }}">Inventory</a><br>
+        <a href="{{ url_for('groceries.groceries_action', action='view') }}">Groceries</a><br>
     </div>
     <main>
+
