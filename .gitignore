@@ -3,4 +3,5 @@
 test.py
 .DS_Store
 database.db
+/.cursor
 /routes/__pycache__
