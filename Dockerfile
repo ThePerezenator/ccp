@@ -3,4 +3,4 @@ WORKDIR /ccp
 COPY . .
 RUN pip install -r requirements.txt
 EXPOSE 5001
-CMD python ./webserver.py
+CMD python ./main.py

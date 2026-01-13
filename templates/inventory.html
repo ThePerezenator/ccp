@@ -157,9 +157,9 @@ document.querySelectorAll(".ingredient-link").forEach(link => {
             dropdown.innerHTML += `<option value="${item.isbn}">${item.brand} - ${item.isbn}</option>`;
         });
 
-        nutritionText.textContent = "Select a brand/ISBN to view nutrition facts";
+        nutritionText.textContent = "Select an item to view nutrition facts";
         modal.style.display = "block";
-    });
+    });             
 });
 
 // Close modal
@@ -172,7 +172,7 @@ dropdown.addEventListener("change", async function() {
     const isbn = this.value;
     const ingredientName = modalTitle.textContent;
     if (!isbn) {
-        nutritionText.textContent = "Select a brand/ISBN to view nutrition facts";
+        nutritionText.textContent = "Select an item to view nutrition facts";
         return;
     }
 

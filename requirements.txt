@@ -2,3 +2,4 @@ flask
 requests
 recipe_scrapers
 ingredient_parser_nlp
+openfoodfacts
