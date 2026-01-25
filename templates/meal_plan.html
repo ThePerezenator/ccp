@@ -1,0 +1,242 @@
+{% include 'header.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='meal_plan.css') }}">
+
+<div class="meal-plan-layout">
+    <section class="meal-plan-main">
+        <div class="meal-plan-header">
+            <div>
+                <h1>Meal Plan</h1>
+                <p class="meal-plan-subtitle">Plan your week and assign recipes by day.</p>
+            </div>
+            <div class="week-controls">
+                <button type="button" id="prev-week">Previous Week</button>
+                <button type="button" id="current-week">Current Week</button>
+                <button type="button" id="next-week">Next Week</button>
+                <span id="week-range" class="week-range"></span>
+            </div>
+        </div>
+
+        <div class="meal-plan-table-wrapper">
+            <table class="meal-plan-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Recipes To Do</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="meal-plan-body"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside id="meal-plan-details" class="meal-plan-details is-hidden">
+        <div class="details-header">
+            <h2 id="details-title">Pick a recipe</h2>
+            <button type="button" id="close-details" class="details-close">Close</button>
+        </div>
+        <div id="details-content" class="details-content"></div>
+    </aside>
+</div>
+
+<script id="recipe-data" type="application/json">{{ recipes|tojson }}</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const defaultImage = "{{ url_for('static', filename='images/favicon.jpg') }}";
+    const recipeRows = JSON.parse(document.getElementById("recipe-data").textContent);
+    const recipes = recipeRows.map((row) => ({
+        id: row[0],
+        name: row[1],
+        description: row[2] || "No description yet.",
+        image: row[5] || defaultImage
+    }));
+
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const mealPlan = {};
+    let weekOffset = 0;
+    let activeDateKey = null;
+
+    const tbody = document.getElementById("meal-plan-body");
+    const weekRangeEl = document.getElementById("week-range");
+    const details = document.getElementById("meal-plan-details");
+    const detailsContent = document.getElementById("details-content");
+    const detailsTitle = document.getElementById("details-title");
+
+    const formatDateKey = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
+
+    const formatDisplayDate = (date) => (
+        date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    );
+
+    const getWeekStart = (offset) => {
+        const today = new Date();
+        const base = new Date(today);
+        base.setDate(base.getDate() + (offset * 7));
+        base.setHours(12, 0, 0, 0);
+        const day = base.getDay();
+        base.setDate(base.getDate() - day);
+        return base;
+    };
+
+    const updateWeekRange = (startDate) => {
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6);
+        const rangeText = `${formatDisplayDate(startDate)} - ${formatDisplayDate(endDate)}`;
+        weekRangeEl.textContent = rangeText;
+    };
+
+    const renderWeek = () => {
+        tbody.innerHTML = "";
+        const startDate = getWeekStart(weekOffset);
+        updateWeekRange(startDate);
+
+        for (let i = 0; i < 7; i += 1) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            const dateKey = formatDateKey(date);
+            const dayName = dayNames[date.getDay()];
+
+            const row = document.createElement("tr");
+            row.dataset.date = dateKey;
+            row.dataset.dayName = dayName;
+
+            const dayCell = document.createElement("td");
+            dayCell.textContent = `${dayName} - ${formatDisplayDate(date)}`;
+            dayCell.className = "day-name";
+
+            const recipeList = document.createElement("ul");
+            recipeList.className = "day-recipe-list";
+            const dayRecipes = mealPlan[dateKey] || [];
+            dayRecipes.forEach((recipe) => {
+                const item = document.createElement("li");
+                item.textContent = recipe.name;
+                item.className = "day-recipe-item";
+                recipeList.appendChild(item);
+            });
+
+            const recipesCell = document.createElement("td");
+            recipesCell.className = "day-recipes";
+            recipesCell.appendChild(recipeList);
+
+            const addButton = document.createElement("button");
+            addButton.type = "button";
+            addButton.className = "add-recipe-btn";
+            addButton.textContent = "Add";
+            addButton.addEventListener("click", () => showRecipePicker(dateKey, dayName));
+
+            const actionCell = document.createElement("td");
+            actionCell.className = "day-actions";
+            actionCell.appendChild(addButton);
+
+            row.appendChild(dayCell);
+            row.appendChild(recipesCell);
+            row.appendChild(actionCell);
+            tbody.appendChild(row);
+        }
+    };
+
+    const renderRecipeCards = () => {
+        detailsContent.innerHTML = "";
+        if (recipes.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "details-empty";
+            emptyMessage.textContent = "No recipes found. Add some to the cookbook.";
+            detailsContent.appendChild(emptyMessage);
+            return;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "recipe-grid";
+
+        recipes.forEach((recipe) => {
+            const card = document.createElement("button");
+            card.type = "button";
+            card.className = "recipe-card";
+            card.innerHTML = `
+                <img src="${recipe.image}" alt="${recipe.name}">
+                <div class="recipe-card-body">
+                    <h3>${recipe.name}</h3>
+                    <p>${recipe.description}</p>
+                </div>
+            `;
+            card.addEventListener("click", () => addRecipeToDay(recipe));
+            grid.appendChild(card);
+        });
+
+        detailsContent.appendChild(grid);
+    };
+
+    const showRecipePicker = (dateKey, dayName) => {
+        activeDateKey = dateKey;
+        detailsTitle.textContent = `Recipes for ${dayName}`;
+        details.classList.remove("is-hidden");
+        renderRecipeCards();
+    };
+
+    const hideDetails = () => {
+        activeDateKey = null;
+        details.classList.add("is-hidden");
+        detailsContent.innerHTML = "";
+        detailsTitle.textContent = "Pick a recipe";
+    };
+
+    const addRecipeToDay = async (recipe) => {
+        if (!activeDateKey) return;
+        if (!mealPlan[activeDateKey]) {
+            mealPlan[activeDateKey] = [];
+        }
+        mealPlan[activeDateKey].push(recipe);
+        const row = tbody.querySelector(`tr[data-date="${activeDateKey}"]`);
+        if (row) {
+            const list = row.querySelector(".day-recipe-list");
+            const item = document.createElement("li");
+            item.textContent = recipe.name;
+            item.className = "day-recipe-item";
+            list.appendChild(item);
+        }
+
+        try {
+            const dayName = row ? row.dataset.dayName : "";
+            await fetch("/meal_plan/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    date: activeDateKey,
+                    day: dayName,
+                    recipe: recipe.name
+                })
+            });
+        } catch (error) {
+            console.error("Meal plan add failed:", error);
+        }
+
+        hideDetails();
+    };
+
+    document.getElementById("prev-week").addEventListener("click", () => {
+        weekOffset -= 1;
+        renderWeek();
+    });
+
+    document.getElementById("next-week").addEventListener("click", () => {
+        weekOffset += 1;
+        renderWeek();
+    });
+
+    document.getElementById("current-week").addEventListener("click", () => {
+        weekOffset = 0;
+        renderWeek();
+    });
+
+    document.getElementById("close-details").addEventListener("click", hideDetails);
+
+    renderWeek();
+});
+</script>
+
+{% include 'footer.html' %}

@@ -1,5 +1,5 @@
 import sqlite
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from routes import recipe, groceries, inventory, api_routes
 
 port = "5001"
@@ -30,7 +30,14 @@ def page_not_found(e):
 
 @app.route("/meal_plan/")
 def meal_plan():
-    return render_template("meal_plan.html"), 200
+    recipes = sqlite.fetch_all_recipes()
+    return render_template("meal_plan.html", recipes=recipes), 200
+
+@app.route("/meal_plan/add", methods=["POST"])
+def meal_plan_add():
+    payload = request.get_json(silent=True) or {}
+    print(f"Meal plan add: {payload}")
+    return {"status": "ok"}, 200
 
 @app.route("/healthcheck/", methods=["GET"])
 def healthcheck():
