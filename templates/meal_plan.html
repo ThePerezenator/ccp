@@ -19,11 +19,7 @@
         <div class="meal-plan-table-wrapper">
             <table class="meal-plan-table">
                 <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Recipes To Do</th>
-                        <th>Action</th>
-                    </tr>
+                    <tr id="meal-plan-header-row"></tr>
                 </thead>
                 <tbody id="meal-plan-body"></tbody>
             </table>
@@ -56,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let weekOffset = 0;
     let activeDateKey = null;
 
+    const headerRow = document.getElementById("meal-plan-header-row");
     const tbody = document.getElementById("meal-plan-body");
     const weekRangeEl = document.getElementById("week-range");
     const details = document.getElementById("meal-plan-details");
@@ -92,8 +89,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const renderWeek = () => {
         tbody.innerHTML = "";
+        headerRow.innerHTML = "";
         const startDate = getWeekStart(weekOffset);
         updateWeekRange(startDate);
+
+        const labelHeader = document.createElement("th");
+        labelHeader.textContent = "Category";
+        labelHeader.className = "row-label";
+        headerRow.appendChild(labelHeader);
+
+        const recipesRow = document.createElement("tr");
+        const actionsRow = document.createElement("tr");
+        const recipesLabel = document.createElement("td");
+        const actionsLabel = document.createElement("td");
+        recipesLabel.textContent = "Recipes";
+        actionsLabel.textContent = "Action";
+        recipesLabel.className = "row-label";
+        actionsLabel.className = "row-label";
+        recipesRow.appendChild(recipesLabel);
+        actionsRow.appendChild(actionsLabel);
+
+        const dayCells = {};
 
         for (let i = 0; i < 7; i += 1) {
             const date = new Date(startDate);
@@ -101,13 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const dateKey = formatDateKey(date);
             const dayName = dayNames[date.getDay()];
 
-            const row = document.createElement("tr");
-            row.dataset.date = dateKey;
-            row.dataset.dayName = dayName;
-
-            const dayCell = document.createElement("td");
-            dayCell.textContent = `${dayName} - ${formatDisplayDate(date)}`;
-            dayCell.className = "day-name";
+            const dayHeader = document.createElement("th");
+            dayHeader.className = "day-column";
+            dayHeader.innerHTML = `
+                <span class="day-name">${dayName}</span>
+                <span class="day-date">${formatDisplayDate(date)}</span>
+            `;
+            headerRow.appendChild(dayHeader);
 
             const recipeList = document.createElement("ul");
             recipeList.className = "day-recipe-list";
@@ -120,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const recipesCell = document.createElement("td");
-            recipesCell.className = "day-recipes";
+            recipesCell.className = "day-cell";
             recipesCell.appendChild(recipeList);
 
             const addButton = document.createElement("button");
@@ -130,14 +146,17 @@ document.addEventListener("DOMContentLoaded", () => {
             addButton.addEventListener("click", () => showRecipePicker(dateKey, dayName));
 
             const actionCell = document.createElement("td");
-            actionCell.className = "day-actions";
+            actionCell.className = "day-cell day-actions";
             actionCell.appendChild(addButton);
 
-            row.appendChild(dayCell);
-            row.appendChild(recipesCell);
-            row.appendChild(actionCell);
-            tbody.appendChild(row);
+            dayCells[dateKey] = { list: recipeList, dayName };
+            recipesRow.appendChild(recipesCell);
+            actionsRow.appendChild(actionCell);
         }
+
+        tbody.appendChild(recipesRow);
+        tbody.appendChild(actionsRow);
+        tbody._dayCells = dayCells;
     };
 
     const renderRecipeCards = () => {
@@ -191,17 +210,17 @@ document.addEventListener("DOMContentLoaded", () => {
             mealPlan[activeDateKey] = [];
         }
         mealPlan[activeDateKey].push(recipe);
-        const row = tbody.querySelector(`tr[data-date="${activeDateKey}"]`);
-        if (row) {
-            const list = row.querySelector(".day-recipe-list");
+        const dayCells = tbody._dayCells || {};
+        const cell = dayCells[activeDateKey];
+        if (cell && cell.list) {
             const item = document.createElement("li");
             item.textContent = recipe.name;
             item.className = "day-recipe-item";
-            list.appendChild(item);
+            cell.list.appendChild(item);
         }
 
         try {
-            const dayName = row ? row.dataset.dayName : "";
+            const dayName = cell ? cell.dayName : "";
             await fetch("/meal_plan/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

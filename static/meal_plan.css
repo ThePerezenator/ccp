@@ -54,7 +54,7 @@
 .meal-plan-table-wrapper {
     background: #e6ebf9;
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -69,6 +69,7 @@
     text-align: left;
     border-bottom: 1px solid #00102d;
     color: #00102d;
+    vertical-align: top;
 }
 
 .meal-plan-table th {
@@ -77,8 +78,26 @@
     font-weight: 600;
 }
 
-.day-name {
+.row-label {
     font-weight: 600;
+    background: #d6e0f4;
+    width: 140px;
+}
+
+.day-column {
+    min-width: 160px;
+}
+
+.day-name {
+    display: block;
+    font-weight: 600;
+}
+
+.day-date {
+    display: block;
+    font-size: 0.85rem;
+    color: #554761;
+    margin-top: 4px;
 }
 
 
@@ -97,12 +116,12 @@
     color: #00102d;
 }
 
-.day-recipes {
-    min-width: 220px;
+.day-cell {
+    min-width: 160px;
 }
 
 .day-actions {
-    width: 100px;
+    text-align: center;
 }
 
 .add-recipe-btn {
