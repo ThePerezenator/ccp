@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <h2 class="title"><button onclick="openSideBar()">🍔</button><a href="/">College Cooking Pamphlet</a></h2>
+        <h2 class="title"><a href="/">College Cooking Pamphlet</a></h2>
         <div class="links">
             <a href="/">Dashboard</a>
             <a href="/cookbook">Cook Book</a>
@@ -19,12 +19,5 @@
             <a href="{{ url_for('groceries.groceries_action', action='view') }}">Groceries</a>
         </div>
     </header>
-    <div id="sideBar">
-        <a href="/">Dashboard</a><br>
-        <a href="/cookbook">Cook Book</a><br>
-        <a href="/meal_plan/">Meal Plan</a><br>
-        <a href="{{ url_for('inventory.inventory_action', action='view') }}">Inventory</a><br>
-        <a href="{{ url_for('groceries.groceries_action', action='view') }}">Groceries</a><br>
-    </div>
     <main>
 
